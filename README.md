@@ -27,6 +27,7 @@ body:
 }
 ```
 
+## InsertUser (1-n)
 `PUT http://localhost:8080/users/addUsers/`
 
 body: 
