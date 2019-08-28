@@ -61,7 +61,6 @@ public class SqlSetup {
                         "`vorname` VARCHAR(100) NOT NULL , " +
                         "`nachname` VARCHAR(100) NOT NULL , " +
                         "`username` VARCHAR(100) NOT NULL , " +
-                        "`geburtsdatum` TIMESTAMP NOT NULL , " +
                         "`adress_id` INT NOT NULL , " +
                         "PRIMARY KEY (`user_id`), " +
                         "CONSTRAINT `fk_adresse` FOREIGN KEY (`adress_id`) REFERENCES `adresse`(`adress_id`) ON DELETE RESTRICT ON UPDATE RESTRICT" +

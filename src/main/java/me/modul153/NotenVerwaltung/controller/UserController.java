@@ -26,12 +26,15 @@ public class UserController {
             throw new UserBadRequestException();
         }
 
-        UserManager.getInstance().addUser(user);
+        if (!UserManager.getInstance().addUser(user)) {
+            throw new RuntimeException("Error adding User.");
+        }
     }
 
     @PutMapping("/addUsers/")
     public void addUsers(@Valid @RequestBody User[] users) {
         for (User user : users) {
+            System.out.println(user.getUserId()+ ": " + user.getUserName());
             UserManager.getInstance().addUser(user);
         }
     }

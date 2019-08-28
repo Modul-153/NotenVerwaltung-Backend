@@ -84,7 +84,6 @@ public class UserManager {
                             r.getString("vorname"),
                             r.getString("nachname"),
                             r.getString("username"),
-                            r.getDate("geburtsdatum"),
                             adressCache.get(r.getInt("adress_id")));
                 } else {
                     return null;
@@ -104,8 +103,8 @@ public class UserManager {
     public User getUser(int id) {
         return userCache.get(id);
     }
-    public User addUser(User user) {
+    public boolean addUser(User user) {
         userCache.update(user.getUserId(), user);
-        return user;
+        return true;
     }
 }

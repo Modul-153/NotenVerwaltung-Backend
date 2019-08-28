@@ -65,26 +65,23 @@ public class SqlHelper {
             }
 
             PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
-                    "INSERT INTO `user` (`user_id`, `vorname`, `nachname`, `username`, `geburtsdatum`, `adress_id`) VALUES (?, ?, ?, ?, ?, ?) " +
-                            "ON DUPLICATE KEY UPDATE `vorname`=?,`nachname`=?,`username`=?,`geburtsdatum`=?,`adress_id`=?");
+                    "INSERT INTO `user` (`user_id`, `vorname`, `nachname`, `username`, `adress_id`) VALUES (?, ?, ?, ?, ?) " +
+                            "ON DUPLICATE KEY UPDATE `vorname`=?,`nachname`=?,`username`=?,`adress_id`=?");
             statement.setInt(1, user.getUserId());
             statement.setString(2, user.getName());
             statement.setString(3, user.getNachname());
             statement.setString(4, user.getUserName());
-            statement.setTimestamp(5, new Timestamp(user.getBirthday().getTime()));
-            statement.setInt(6, user.getAdresse().getAdressId());
+            statement.setInt(5, user.getAdresse().getAdressId());
 
-            statement.setString(7, user.getName());
-            statement.setString(8, user.getNachname());
-            statement.setString(9, user.getUserName());
-            statement.setTimestamp(10, new Timestamp(user.getBirthday().getTime()));
-            statement.setInt(11, user.getAdresse().getAdressId());
+            statement.setString(6, user.getName());
+            statement.setString(7, user.getNachname());
+            statement.setString(8, user.getUserName());
+            statement.setInt(9, user.getAdresse().getAdressId());
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-        //todo implement
     }
 }
