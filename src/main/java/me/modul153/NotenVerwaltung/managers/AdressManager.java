@@ -1,5 +1,6 @@
 package me.modul153.NotenVerwaltung.managers;
 
+import me.modul153.NotenVerwaltung.dao.AdresseOrt;
 import me.modul153.NotenVerwaltung.dao.adresse.Adresse;
 import net.myplayplanet.services.cache.AbstractSaveProvider;
 import net.myplayplanet.services.cache.Cache;
@@ -10,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AdressManager {
-    private Cache<Integer, Adresse> adressCache;
+    private Cache<Integer, AdresseOrt> adressCache;
 
     private static AdressManager userManager = null;
     public static AdressManager getInstance() {
@@ -27,10 +28,11 @@ public class AdressManager {
                 statement.setInt(1, integer);
                 ResultSet r = statement.executeQuery();
                 if (r.next()) {
-                    return new Adresse(integer,
+                    Adresse adresse = new Adresse(integer,
                             r.getString("strasse"),
                             r.getInt("nummer"),
                             r.getInt("ort_id"));
+                    return new AdresseOrt(adresse, null);
                 } else {
                     return null;
                 }
@@ -38,20 +40,20 @@ public class AdressManager {
                 e.printStackTrace();
                 return null;
             }
-        }, new AbstractSaveProvider<Integer, Adresse>() {
+        }, new AbstractSaveProvider<Integer, AdresseOrt>() {
             @Override
-            public boolean save(Integer integer, Adresse adresse) {
-                return saveAdresse(adresse, true);
+            public boolean save(Integer integer, AdresseOrt adresse) {
+                return saveAdresse(adresse);
             }
         });
     }
 
     public Adresse getAdresse(int id) {
-        return adressCache.get(id);
+        return adressCache.get(id).getAdresse();
     }
 
     public boolean addAdresse(Adresse adresse) {
-        adressCache.update(adresse.getAdressId(), adresse);
+        adressCache.update(adresse.getAdressId(), new AdresseOrt(adresse, null));
         return true;
     }
 
@@ -59,12 +61,21 @@ public class AdressManager {
         adressCache.clearCache();
     }
 
-    protected boolean saveAdresse(Adresse adresse, boolean saveSub) {
-        try {
-            if (saveSub) {
-                OrtManager.getInstance().saveOrt(adresse.getOrt());
-            }
+    protected boolean saveAdresse(AdresseOrt adresseOrt) {
 
+        Adresse adresse = adresseOrt.getAdresse();
+
+        if (OrtManager.getInstance().getOrt(adresse.getOrtId()) == null) {
+            if (adresseOrt.getOrt() != null) {
+                if (!OrtManager.getInstance().saveOrt(adresseOrt.getOrt())) {
+                    return false;
+                }
+            }else {
+                return false;
+            }
+        }
+
+        try {
             PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                     "INSERT INTO `adresse` (`adress_id`, `strasse`, `nummer`, `ort_id`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `strasse`=?,`nummer`=?,`ort_id`=?");
             statement.setInt(1, adresse.getAdressId());

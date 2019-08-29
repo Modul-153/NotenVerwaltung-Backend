@@ -1,5 +1,6 @@
 package me.modul153.NotenVerwaltung.managers;
 
+import me.modul153.NotenVerwaltung.dao.UserAdresseOrt;
 import me.modul153.NotenVerwaltung.dao.user.User;
 import net.myplayplanet.services.cache.AbstractSaveProvider;
 import net.myplayplanet.services.cache.Cache;
@@ -10,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserManager {
-    private Cache<Integer, User> userCache;
+    private Cache<Integer, UserAdresseOrt> userCache;
 
     private static UserManager userManager = null;
     public static UserManager getInstance() {
@@ -23,16 +24,16 @@ public class UserManager {
     private UserManager() {
         userCache = new Cache<>("user-cache", integer -> {
             try {
-                System.out.println("getUser user from sql " + integer);
                 PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `vorname`,`nachname`,`username`,`adress_id` from `notenverwaltung`.`user` where `user_id` = ?");
                 statement.setInt(1, integer);
                 ResultSet r = statement.executeQuery();
                 if (r.next()) {
-                    return new User(integer,
+                    User user = new User(integer,
                             r.getString("vorname"),
                             r.getString("nachname"),
                             r.getString("username"),
                             r.getInt("adress_id"));
+                    return new UserAdresseOrt(user, null, null);
                 } else {
                     return null;
                 }
@@ -40,20 +41,20 @@ public class UserManager {
                 e.printStackTrace();
                 return null;
             }
-        }, new AbstractSaveProvider<Integer, User>() {
+        }, new AbstractSaveProvider<Integer, UserAdresseOrt>() {
             @Override
-            public boolean save(Integer integer, User user) {
-                return saveUser(user, true);
+            public boolean save(Integer integer, UserAdresseOrt user) {
+                return saveUser(user);
             }
         });
     }
 
     public User getUser(int id) {
-        return userCache.get(id);
+        return userCache.get(id).getUser();
     }
 
     public boolean addUser(User user) {
-        userCache.update(user.getUserId(), user);
+        userCache.update(user.getUserId(), new UserAdresseOrt(user, null, null));
         return true;
     }
 
@@ -61,12 +62,20 @@ public class UserManager {
         userCache.clearCache();
     }
 
-    protected boolean saveUser(User user, boolean saveSub) {
-        try {
-            if (saveSub) {
-                AdressManager.getInstance().saveAdresse(user.getAdresse(), true);
-            }
+    protected boolean saveUser(UserAdresseOrt userAdresseOrt) {
+        User user = userAdresseOrt.getUser();
 
+        if (AdressManager.getInstance().getAdresse(user.getAdresseId()) == null) {
+            if (userAdresseOrt.getAdresse() != null) {
+                if (!AdressManager.getInstance().saveAdresse(userAdresseOrt.getAdresse())) {
+                    return false;
+                }
+            }else {
+                return false;
+            }
+        }
+
+        try {
             PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                     "INSERT INTO `user` (`user_id`, `vorname`, `nachname`, `username`, `adress_id`) VALUES (?, ?, ?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE `vorname`=?,`nachname`=?,`username`=?,`adress_id`=?");

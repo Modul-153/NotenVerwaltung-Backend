@@ -1,9 +1,9 @@
 package me.modul153.NotenVerwaltung.controller;
 
-import me.modul153.NotenVerwaltung.dao.AdresseOrt;
 import me.modul153.NotenVerwaltung.dao.UserAdresseOrt;
 import me.modul153.NotenVerwaltung.dao.user.User;
-import me.modul153.NotenVerwaltung.exceptions.UserBadRequestException;
+import me.modul153.NotenVerwaltung.exceptions.BadRequestException;
+import me.modul153.NotenVerwaltung.exceptions.ForeignKeyNotFoundException;
 import me.modul153.NotenVerwaltung.exceptions.NotFoundException;
 import me.modul153.NotenVerwaltung.managers.AdressManager;
 import me.modul153.NotenVerwaltung.managers.OrtManager;
@@ -27,7 +27,15 @@ public class UserController {
     @PutMapping("/addUser/")
     public void addUser(@RequestBody User user) {
         if (user == null) {
-            throw new UserBadRequestException();
+            throw new BadRequestException();
+        }
+
+        if (user.getAdresse() == null) {
+            throw new ForeignKeyNotFoundException();
+        }
+
+        if (user.getAdresse().getOrt() == null) {
+            throw new ForeignKeyNotFoundException();
         }
 
         UserManager.getInstance().addUser(user);
@@ -36,7 +44,11 @@ public class UserController {
     @PutMapping("/addUser/")
     public void addUser(@RequestBody UserAdresseOrt userAdresseOrt) {
         if (userAdresseOrt == null) {
-            throw new UserBadRequestException();
+            throw new BadRequestException();
+        }
+
+        if (!userAdresseOrt.valid()) {
+            throw new BadRequestException();
         }
 
         OrtManager.getInstance().addOrt(userAdresseOrt.getOrt());
