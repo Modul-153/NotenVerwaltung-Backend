@@ -1,5 +1,6 @@
 package me.modul153.NotenVerwaltung.managers;
 
+import me.modul153.NotenVerwaltung.dao.AdresseOrt;
 import me.modul153.NotenVerwaltung.dao.UserAdresseOrt;
 import me.modul153.NotenVerwaltung.dao.user.User;
 import net.myplayplanet.services.cache.AbstractSaveProvider;
@@ -67,7 +68,7 @@ public class UserManager {
 
         if (AdressManager.getInstance().getAdresse(user.getAdresseId()) == null) {
             if (userAdresseOrt.getAdresse() != null) {
-                if (!AdressManager.getInstance().saveAdresse(userAdresseOrt.getAdresse())) {
+                if (!AdressManager.getInstance().saveAdresse(new AdresseOrt(userAdresseOrt.getAdresse(), userAdresseOrt.getOrt()))) {
                     return false;
                 }
             }else {

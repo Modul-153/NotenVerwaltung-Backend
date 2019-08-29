@@ -41,7 +41,7 @@ public class UserController {
         UserManager.getInstance().addUser(user);
     }
 
-    @PutMapping("/addUser/")
+    @PutMapping("/addUserAdresseOrt/")
     public void addUser(@RequestBody UserAdresseOrt userAdresseOrt) {
         if (userAdresseOrt == null) {
             throw new BadRequestException();

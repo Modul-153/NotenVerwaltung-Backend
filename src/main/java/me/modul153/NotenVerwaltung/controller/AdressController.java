@@ -34,8 +34,8 @@ public class AdressController {
 
         AdressManager.getInstance().addAdresse(adresse);
     }
-    @GetMapping("/addAdresse/")
-    public void addAdresse(@RequestBody AdresseOrt adresseOrt) {
+    @GetMapping("/addAdresseOrt/")
+    public void addAdresse2(@RequestBody AdresseOrt adresseOrt) {
         if (adresseOrt == null) {
             throw new NotFoundException();
         }
