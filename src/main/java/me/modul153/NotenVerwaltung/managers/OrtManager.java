@@ -1,19 +1,14 @@
 package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
-import me.modul153.NotenVerwaltung.api.IDataObject;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractOrt;
-import me.modul153.NotenVerwaltung.data.model.Ort;
-import me.modul153.NotenVerwaltung.data.response.OrtResponse;
-import net.myplayplanet.services.cache.AbstractSaveProvider;
-import net.myplayplanet.services.cache.Cache;
+import me.modul153.NotenVerwaltung.data.abstracts.Ort;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class OrtManager extends AbstractManager<AbstractOrt, Ort, OrtResponse> {
+public class OrtManager extends AbstractManager<Ort, Ort, Ort> {
     private static OrtManager userManager = null;
     public static OrtManager getInstance() {
         if (userManager == null) {
@@ -40,7 +35,7 @@ public class OrtManager extends AbstractManager<AbstractOrt, Ort, OrtResponse> {
     }
 
     @Override
-    public boolean saveIDataObjectComplex(Integer key, AbstractOrt value) {
+    public boolean saveIDataObjectComplex(Integer key, Ort value) {
         try {
             PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                     "INSERT INTO `ort` (`ort_id`, `zipcode`, `name`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `zipcode`=?,`name`=?");
