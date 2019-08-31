@@ -1,13 +1,11 @@
 package me.modul153.NotenVerwaltung.controller;
 
-import me.modul153.NotenVerwaltung.dao.AdresseOrt;
-import me.modul153.NotenVerwaltung.dao.adresse.Adresse;
-import me.modul153.NotenVerwaltung.dao.adresse.Ort;
+import me.modul153.NotenVerwaltung.data.model.Adresse;
 import me.modul153.NotenVerwaltung.exceptions.BadRequestException;
-import me.modul153.NotenVerwaltung.exceptions.ForeignKeyNotFoundException;
 import me.modul153.NotenVerwaltung.exceptions.NotFoundException;
 import me.modul153.NotenVerwaltung.managers.AdressManager;
 import me.modul153.NotenVerwaltung.managers.OrtManager;
+import me.modul153.NotenVerwaltung.data.response.AdressResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,36 +13,32 @@ import org.springframework.web.bind.annotation.*;
 public class AdressController {
     @GetMapping("/getAdresse/{adressId}")
     public Adresse getAdresse(@PathVariable(value = "adressId") Integer id) {
-        Adresse adresse = AdressManager.getInstance().getAdresse(id);
+        Adresse adresse = AdressManager.getInstance().getBuissnesObject(id);
         if (adresse == null) {
             throw new NotFoundException();
         }
         return adresse;
     }
 
-    @GetMapping("/addAdresse/")
+    @PutMapping("/addAdresse/")
     public void addAdresse(@RequestBody Adresse adresse) {
         if (adresse == null) {
             throw new NotFoundException();
         }
 
-        if (adresse.getOrt() == null) {
-            throw new ForeignKeyNotFoundException();
-        }
-
-        AdressManager.getInstance().addAdresse(adresse);
+        AdressManager.getInstance().add(adresse.getAdressId(), adresse);
     }
-    @GetMapping("/addAdresseOrt/")
-    public void addAdresse2(@RequestBody AdresseOrt adresseOrt) {
-        if (adresseOrt == null) {
+    @PutMapping("/addAdresseOrt/")
+    public void addAdresse2(@RequestBody AdressResponse adresse) {
+        if (adresse == null) {
             throw new NotFoundException();
         }
 
-        if (!adresseOrt.valid()) {
+        if (adresse.getOrt() == null) {
             throw new BadRequestException();
         }
 
-        OrtManager.getInstance().addOrt(adresseOrt.getOrt());
-        AdressManager.getInstance().addAdresse(adresseOrt.getAdresse());
+        OrtManager.getInstance().add(adresse.getOrt().getOrtId(), adresse.getOrt());
+        AdressManager.getInstance().add(adresse.getAdressId(), adresse);
     }
 }

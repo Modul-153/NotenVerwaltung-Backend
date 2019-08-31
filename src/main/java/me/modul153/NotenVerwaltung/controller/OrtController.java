@@ -1,6 +1,7 @@
 package me.modul153.NotenVerwaltung.controller;
 
-import me.modul153.NotenVerwaltung.dao.adresse.Ort;
+import me.modul153.NotenVerwaltung.data.Ort;
+import me.modul153.NotenVerwaltung.data.model.Ort;
 import me.modul153.NotenVerwaltung.exceptions.NotFoundException;
 import me.modul153.NotenVerwaltung.managers.OrtManager;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class OrtController {
         return ort;
     }
 
-    @GetMapping("/addOrt/")
+    @PutMapping("/addOrt/")
     public void addOrt(@RequestBody Ort ort) {
         if (ort == null) {
             throw new NotFoundException();
