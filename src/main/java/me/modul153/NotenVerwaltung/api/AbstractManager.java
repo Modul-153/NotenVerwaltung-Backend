@@ -50,6 +50,10 @@ public abstract class AbstractManager<M extends IAbstract, B extends IBuissnesOb
         }
     }
 
+    public M get(Integer key) {
+        return iDataObjectCache.get(key);
+    }
+
     public void add(Integer key, M value) {
         if (validate(value)) {
             iDataObjectCache.update(key, value);

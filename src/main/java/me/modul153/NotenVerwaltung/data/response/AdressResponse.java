@@ -2,7 +2,6 @@ package me.modul153.NotenVerwaltung.data.response;
 
 import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
-import me.modul153.NotenVerwaltung.api.IBuissnesObject;
 import me.modul153.NotenVerwaltung.api.IResopnseType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdresse;
 import me.modul153.NotenVerwaltung.data.abstracts.Ort;
@@ -18,7 +17,7 @@ public class AdressResponse extends AbstractAdresse implements IResopnseType {
     }
 
     @Override
-    public IBuissnesObject toBusinessObject() {
+    public Adresse toBusinessObject() {
         return new Adresse(getAdressId(), getStrasse(), getNummer(), ort.getOrtId());
     }
     @Override
