@@ -60,7 +60,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserRespons
                 System.out.println("could not save object with id " + key + ", adress not found!");
                 return false;
             }else if (AdressManager.getInstance().getBuissnesObject(user.getAdresse().getAdressId()) == null) {
-                AdressManager.getInstance().saveIDataObjectComplex(key, user.getAdresse());
+                AdressManager.getInstance().save(key, user.getAdresse());
             }
             adresseId = user.getAdresse().getAdressId();
         }else {
@@ -94,17 +94,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserRespons
     public boolean validate(AbstractUser value) {
         switch (value.getType()) {
             case RESPONSE_TYPE:
-                UserResponse ar = (UserResponse) value;
-
-                if (ar.getAdresse() == null) {
-                    return false;
-                }
-
-                if (AdressManager.getInstance().contains(ar.getAdresse().getAdressId())) {
-                    return true;
-                }
-                return false;
-
+                return ((UserResponse) value).getAdresse() != null;
             case BUISSNES_OBJECT:
                 return AdressManager.getInstance().contains(((User) value).getAdresseId());
             default:

@@ -46,9 +46,9 @@ public class AdressManager extends AbstractManager<AbstractAdresse, Adresse, Adr
 
         if (value instanceof Adresse) {
             Adresse adresse = (Adresse) value;
-            ortId = adresse.getAdressId();
+            ortId = adresse.getOrtId();
 
-            if (OrtManager.getInstance().getBuissnesObject(adresse.getOrtId()) == null) {
+            if (OrtManager.getInstance().get(adresse.getOrtId()) == null) {
                 System.out.println("could not save object with id " + key + ", adress not found!");
                 return false;
             }
@@ -59,7 +59,7 @@ public class AdressManager extends AbstractManager<AbstractAdresse, Adresse, Adr
                 System.out.println("could not save object with id " + key + ", ort not found!");
                 return false;
             }else if (OrtManager.getInstance().getBuissnesObject(adresse.getOrt().getOrtId()) == null) {
-                OrtManager.getInstance().saveIDataObjectComplex(key, adresse.getOrt());
+                OrtManager.getInstance().save(key, adresse.getOrt());
             }
             ortId = adresse.getOrt().getOrtId();
         }else {
@@ -90,13 +90,7 @@ public class AdressManager extends AbstractManager<AbstractAdresse, Adresse, Adr
     public boolean validate(AbstractAdresse value) {
         switch (value.getType()) {
             case RESPONSE_TYPE:
-                AdressResponse ar = (AdressResponse) value;
-
-                if (ar.getOrt() == null) {
-                    return false;
-                }
-
-                return OrtManager.getInstance().contains(ar.getOrt().getOrtId());
+                return ((AdressResponse) value).getOrt() != null;
             case BUISSNES_OBJECT:
                 return OrtManager.getInstance().contains(((Adresse) value).getOrtId());
             default:

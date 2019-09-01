@@ -3,15 +3,26 @@ package me.modul153.NotenVerwaltung.api;
 import net.myplayplanet.services.cache.AbstractSaveProvider;
 import net.myplayplanet.services.cache.Cache;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class AbstractManager<M extends IAbstract, B extends IBuissnesObject & IAbstract, R extends IResopnseType & IAbstract> {
 
     private Cache<Integer, M> iDataObjectCache;
+    private List<String> notSave;
 
     public AbstractManager() {
+        notSave = new ArrayList<>();
         iDataObjectCache = new Cache<>(getManagerName() + "-cache", this::loadIDataObjectComplex, new AbstractSaveProvider<Integer, M>() {
             @Override
             public boolean save(Integer integer, M user) {
-                return saveIDataObjectComplex(integer, user);
+                String o = user.toJson();
+                if (!notSave.contains(o)) {
+                    return saveIDataObjectComplex(integer, user);
+                }else {
+                    notSave.remove(o);
+                    return true;
+                }
             }
         });
     }
@@ -19,6 +30,16 @@ public abstract class AbstractManager<M extends IAbstract, B extends IBuissnesOb
     public abstract M loadIDataObjectComplex(Integer key);
 
     public abstract boolean saveIDataObjectComplex(Integer key, M value);
+
+    public boolean save(Integer key, M value) {
+        if (saveIDataObjectComplex(key, value)) {
+            setSave(value, true);
+            this.add(key, value);
+            return true;
+        }else {
+            return false;
+        }
+    }
 
     public boolean contains(Integer key) {
         return iDataObjectCache.get(key) != null;
@@ -34,6 +55,15 @@ public abstract class AbstractManager<M extends IAbstract, B extends IBuissnesOb
             return (B) rt.toBusinessObject();
         }else {
             return null;
+        }
+    }
+
+    public void setSave(IDataObject object, boolean dontSave) {
+        String e = object.toJson();
+        if (dontSave) {
+            notSave.add(e);
+        }else {
+            notSave.remove(e);
         }
     }
 
@@ -57,6 +87,8 @@ public abstract class AbstractManager<M extends IAbstract, B extends IBuissnesOb
     public void add(Integer key, M value) {
         if (validate(value)) {
             iDataObjectCache.update(key, value);
+        }else {
+            System.out.println("invalid object with id " + key);
         }
     }
 
