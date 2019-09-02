@@ -7,13 +7,13 @@ import me.modul153.NotenVerwaltung.exceptions.BadRequestException;
 import me.modul153.NotenVerwaltung.exceptions.NotFoundException;
 import me.modul153.NotenVerwaltung.managers.AdressManager;
 import me.modul153.NotenVerwaltung.managers.OrtManager;
-import me.modul153.NotenVerwaltung.data.response.AdresseComplex;
+import me.modul153.NotenVerwaltung.data.complex.AdresseComplex;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("(/api/adresse")
+@RequestMapping("/api/adresse")
 public class AdressController {
     @GetMapping("/getAdresse")
     public Adresse getAdresse(@RequestParam(value = "adressId") Integer id) {

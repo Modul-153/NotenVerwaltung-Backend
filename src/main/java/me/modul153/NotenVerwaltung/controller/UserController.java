@@ -3,7 +3,7 @@ package me.modul153.NotenVerwaltung.controller;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
 import me.modul153.NotenVerwaltung.data.model.User;
-import me.modul153.NotenVerwaltung.data.response.UserComplex;
+import me.modul153.NotenVerwaltung.data.complex.UserComplex;
 import me.modul153.NotenVerwaltung.managers.UserManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

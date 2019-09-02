@@ -3,7 +3,7 @@ package me.modul153.NotenVerwaltung.managers;
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdresse;
 import me.modul153.NotenVerwaltung.data.model.Adresse;
-import me.modul153.NotenVerwaltung.data.response.AdresseComplex;
+import me.modul153.NotenVerwaltung.data.complex.AdresseComplex;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;

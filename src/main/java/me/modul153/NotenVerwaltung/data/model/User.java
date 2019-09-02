@@ -4,7 +4,7 @@ import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
-import me.modul153.NotenVerwaltung.data.response.UserComplex;
+import me.modul153.NotenVerwaltung.data.complex.UserComplex;
 import me.modul153.NotenVerwaltung.managers.AdressManager;
 
 @Data

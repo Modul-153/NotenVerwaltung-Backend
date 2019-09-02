@@ -1,4 +1,4 @@
-package me.modul153.NotenVerwaltung.data.response;
+package me.modul153.NotenVerwaltung.data.complex;
 
 import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;

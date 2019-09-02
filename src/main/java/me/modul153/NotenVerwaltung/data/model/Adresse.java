@@ -5,7 +5,7 @@ import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdresse;
 import me.modul153.NotenVerwaltung.managers.OrtManager;
-import me.modul153.NotenVerwaltung.data.response.AdresseComplex;
+import me.modul153.NotenVerwaltung.data.complex.AdresseComplex;
 
 @Data
 public class Adresse extends AbstractAdresse implements ISqlType {

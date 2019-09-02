@@ -27,8 +27,14 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
         });
     }
 
+    /***
+     * SQL implemention des ladens eines Objektes
+     */
     public abstract M loadIDataObjectComplex(Integer key);
 
+    /**
+     * SQL implementions des speicherns eines Objektes.
+     */
     public abstract boolean saveIDataObjectComplex(Integer key, M value);
 
     public boolean save(Integer key, M value) {
