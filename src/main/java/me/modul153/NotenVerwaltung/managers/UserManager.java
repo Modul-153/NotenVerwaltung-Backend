@@ -36,6 +36,22 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
         });
     }
 
+    @Override
+    public void add(Integer key, AbstractUser value) {
+        super.add(key, value);
+        listCache.get(0).add(key);
+    }
+
+    public AbstractUser getUser(String username) {
+        for (Integer integer : listCache.get(0)) {
+            AbstractUser abstractUser = this.get(integer);
+            if (abstractUser.getUserName().equalsIgnoreCase(username)) {
+                return abstractUser;
+            }
+        }
+        return null;
+    }
+
     private static UserManager userManager = null;
 
     public static UserManager getInstance() {
@@ -127,6 +143,8 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                 return false;
         }
     }
+
+
 
     @Override
     public String getManagerName() {
