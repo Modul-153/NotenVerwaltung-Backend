@@ -11,12 +11,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AdressManager extends AbstractManager<AbstractAdresse, Adresse, AdresseComplex> {
-    private static AdressManager userManager = null;
+    private static AdressManager adressManager = null;
     public static AdressManager getInstance() {
-        if (userManager == null) {
-            userManager = new AdressManager();
+        if (adressManager == null) {
+            adressManager = new AdressManager();
         }
-        return userManager;
+        return adressManager;
     }
 
     @Override

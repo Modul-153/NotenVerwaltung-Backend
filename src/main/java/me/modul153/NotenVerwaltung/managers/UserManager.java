@@ -2,16 +2,42 @@ package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
-import me.modul153.NotenVerwaltung.data.model.User;
 import me.modul153.NotenVerwaltung.data.complex.UserComplex;
+import me.modul153.NotenVerwaltung.data.model.User;
+import net.myplayplanet.services.cache.Cache;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class UserManager extends AbstractManager<AbstractUser, User, UserComplex> {
+
+    Cache<Integer, ArrayList<Integer>> listCache;
+
+    public UserManager() {
+        super();
+        listCache = new net.myplayplanet.services.cache.Cache<>("list-user-cache", -1L, k -> {
+            ArrayList<Integer> result = new ArrayList<>();
+
+            try {
+                PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `user_id` from `notenverwaltung`.`user`");
+                ResultSet set = statement.executeQuery();
+
+                while (set.next()) {
+                    result.add(set.getInt("user_id"));
+                }
+                return result;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
+    }
+
     private static UserManager userManager = null;
+
     public static UserManager getInstance() {
         if (userManager == null) {
             userManager = new UserManager();
@@ -53,17 +79,17 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                 System.out.println("could not save object with id " + key + ", adress not found!");
                 return false;
             }
-        }else if (value instanceof UserComplex) {
+        } else if (value instanceof UserComplex) {
             UserComplex user = (UserComplex) value;
 
             if (user.getAdresse() == null) {
                 System.out.println("could not save object with id " + key + ", adress not found!");
                 return false;
-            }else if (AdressManager.getInstance().getSqlType(user.getAdresse().getAdressId()) == null) {
+            } else if (AdressManager.getInstance().getSqlType(user.getAdresse().getAdressId()) == null) {
                 AdressManager.getInstance().save(key, user.getAdresse());
             }
             adresseId = user.getAdresse().getAdressId();
-        }else {
+        } else {
             System.out.println("invalid object in " + getManagerName() + "-cache found.");
             return false;
         }

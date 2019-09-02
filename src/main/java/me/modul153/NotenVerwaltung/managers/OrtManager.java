@@ -9,12 +9,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class OrtManager extends AbstractManager<Ort, Ort, Ort> {
-    private static OrtManager userManager = null;
+    private static OrtManager ortManager = null;
     public static OrtManager getInstance() {
-        if (userManager == null) {
-            userManager = new OrtManager();
+        if (ortManager == null) {
+            ortManager = new OrtManager();
         }
-        return userManager;
+        return ortManager;
     }
 
     @Override
@@ -51,6 +51,8 @@ public class OrtManager extends AbstractManager<Ort, Ort, Ort> {
             return false;
         }
     }
+
+
 
     @Override
     public String getManagerName() {

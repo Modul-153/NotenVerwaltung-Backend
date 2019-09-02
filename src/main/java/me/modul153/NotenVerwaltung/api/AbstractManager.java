@@ -13,7 +13,7 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
 
     public AbstractManager() {
         notSave = new ArrayList<>();
-        iDataObjectCache = new Cache<>(getManagerName() + "-cache", this::loadIDataObjectComplex, new AbstractSaveProvider<Integer, M>() {
+        iDataObjectCache = new Cache<>(getManagerName() + "-cache", -1L,this::loadIDataObjectComplex, new AbstractSaveProvider<Integer, M>() {
             @Override
             public boolean save(Integer integer, M user) {
                 String o = user.toJson();
