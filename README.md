@@ -171,3 +171,20 @@ body:
 }
 ```
 
+## Ort
+
+### getOrt
+`GET http://localhost:8080/api/ort/getOrt?ortId=<id>`
+
+### addOrt
+`PUT http://localhost:8080/api/ort/AddOrt/`
+
+body: 
+
+```
+{
+    "ortId": 10,
+    "zipCode": 1956,
+    "name": "Zlatni Pyasatsi"
+}
+```
