@@ -7,13 +7,13 @@ import me.modul153.NotenVerwaltung.exceptions.BadRequestException;
 import me.modul153.NotenVerwaltung.exceptions.NotFoundException;
 import me.modul153.NotenVerwaltung.managers.AdressManager;
 import me.modul153.NotenVerwaltung.managers.OrtManager;
-import me.modul153.NotenVerwaltung.data.response.AdressResponse;
+import me.modul153.NotenVerwaltung.data.response.AdresseComplex;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/adresse")
+@RequestMapping("(/api/adresse")
 public class AdressController {
     @GetMapping("/getAdresse")
     public Adresse getAdresse(@RequestParam(value = "adressId") Integer id) {
@@ -23,27 +23,27 @@ public class AdressController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Adresse with id " + id + " not found.");
         }
 
-        if (adresse.getType() == AbstractionType.BUISSNES_OBJECT) {
+        if (adresse.getType() == AbstractionType.SQL_TYPE) {
             return (Adresse) adresse;
-        }else if(adresse.getType() == AbstractionType.RESPONSE_TYPE) {
-            return ((AdressResponse) adresse).toBusinessObject();
+        }else if(adresse.getType() == AbstractionType.COMPLEX_TYPE) {
+            return ((AdresseComplex) adresse).toSqlType();
         }else {
             return null;
         }
     }
 
     @GetMapping("/getAdresseComplex")
-    public AdressResponse getAdresseComplex(@RequestParam(value = "adressId") Integer id) {
+    public AdresseComplex getAdresseComplex(@RequestParam(value = "adressId") Integer id) {
         AbstractAdresse adresse = AdressManager.getInstance().get(id);
 
         if (adresse == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Adresse with id " + id + " not found.");
         }
 
-        if (adresse.getType() == AbstractionType.BUISSNES_OBJECT) {
-            return ((Adresse) adresse).toResponse();
-        }else if(adresse.getType() == AbstractionType.RESPONSE_TYPE) {
-            return (AdressResponse) adresse;
+        if (adresse.getType() == AbstractionType.SQL_TYPE) {
+            return ((Adresse) adresse).toComplexType();
+        }else if(adresse.getType() == AbstractionType.COMPLEX_TYPE) {
+            return (AdresseComplex) adresse;
         }else {
             return null;
         }
@@ -58,7 +58,7 @@ public class AdressController {
         AdressManager.getInstance().add(adresse.getAdressId(), adresse);
     }
     @PutMapping("/addAdresseComplex/")
-    public void addAdresse2(@RequestBody AdressResponse adresse) {
+    public void addAdresse2(@RequestBody AdresseComplex adresse) {
         if (adresse == null) {
             throw new NotFoundException();
         }

@@ -6,7 +6,7 @@ import net.myplayplanet.services.cache.Cache;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractManager<M extends IAbstract, B extends IBuissnesObject & IAbstract, R extends IResopnseType & IAbstract> {
+public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & IAbstract, R extends IComplexType & IAbstract> {
 
     private Cache<Integer, M> iDataObjectCache;
     private List<String> notSave;
@@ -45,14 +45,14 @@ public abstract class AbstractManager<M extends IAbstract, B extends IBuissnesOb
         return iDataObjectCache.get(key) != null;
     }
 
-    public B getBuissnesObject(Integer key) {
+    public B getSqlType(Integer key) {
         M abstr = iDataObjectCache.get(key);
 
-        if (abstr instanceof IBuissnesObject ) {
+        if (abstr instanceof ISqlType) {
             return (B) abstr;
-        }else if (abstr instanceof IResopnseType) {
-            IResopnseType rt = (IResopnseType) abstr;
-            return (B) rt.toBusinessObject();
+        }else if (abstr instanceof IComplexType) {
+            IComplexType rt = (IComplexType) abstr;
+            return (B) rt.toSqlType();
         }else {
             return null;
         }
@@ -67,14 +67,14 @@ public abstract class AbstractManager<M extends IAbstract, B extends IBuissnesOb
         }
     }
 
-    public R getResponseType(Integer key) {
+    public R getComplexType(Integer key) {
         M abstr = iDataObjectCache.get(key);
 
-        if (abstr instanceof IResopnseType ) {
+        if (abstr instanceof IComplexType) {
             return (R) abstr;
-        }else if (abstr instanceof IBuissnesObject) {
-            IBuissnesObject rt = (IBuissnesObject) abstr;
-            return (R) rt.toResponse();
+        }else if (abstr instanceof ISqlType) {
+            ISqlType rt = (ISqlType) abstr;
+            return (R) rt.toComplexType();
         }else {
             return null;
         }

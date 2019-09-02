@@ -3,14 +3,14 @@ package me.modul153.NotenVerwaltung.managers;
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
 import me.modul153.NotenVerwaltung.data.model.User;
-import me.modul153.NotenVerwaltung.data.response.UserResponse;
+import me.modul153.NotenVerwaltung.data.response.UserComplex;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserManager extends AbstractManager<AbstractUser, User, UserResponse> {
+public class UserManager extends AbstractManager<AbstractUser, User, UserComplex> {
     private static UserManager userManager = null;
     public static UserManager getInstance() {
         if (userManager == null) {
@@ -49,17 +49,17 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserRespons
             User user = (User) value;
             adresseId = user.getAdresseId();
 
-            if (AdressManager.getInstance().getBuissnesObject(user.getAdresseId()) == null) {
+            if (AdressManager.getInstance().getSqlType(user.getAdresseId()) == null) {
                 System.out.println("could not save object with id " + key + ", adress not found!");
                 return false;
             }
-        }else if (value instanceof UserResponse) {
-            UserResponse user = (UserResponse) value;
+        }else if (value instanceof UserComplex) {
+            UserComplex user = (UserComplex) value;
 
             if (user.getAdresse() == null) {
                 System.out.println("could not save object with id " + key + ", adress not found!");
                 return false;
-            }else if (AdressManager.getInstance().getBuissnesObject(user.getAdresse().getAdressId()) == null) {
+            }else if (AdressManager.getInstance().getSqlType(user.getAdresse().getAdressId()) == null) {
                 AdressManager.getInstance().save(key, user.getAdresse());
             }
             adresseId = user.getAdresse().getAdressId();
@@ -93,9 +93,9 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserRespons
     @Override
     public boolean validate(AbstractUser value) {
         switch (value.getType()) {
-            case RESPONSE_TYPE:
-                return ((UserResponse) value).getAdresse() != null;
-            case BUISSNES_OBJECT:
+            case COMPLEX_TYPE:
+                return ((UserComplex) value).getAdresse() != null;
+            case SQL_TYPE:
                 return AdressManager.getInstance().contains(((User) value).getAdresseId());
             default:
                 return false;

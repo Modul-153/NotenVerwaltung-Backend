@@ -4,28 +4,28 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.IAbstract;
-import me.modul153.NotenVerwaltung.api.IBuissnesObject;
-import me.modul153.NotenVerwaltung.api.IResopnseType;
+import me.modul153.NotenVerwaltung.api.ISqlType;
+import me.modul153.NotenVerwaltung.api.IComplexType;
 
 @AllArgsConstructor
 @Data
-public class Ort implements IAbstract, IBuissnesObject, IResopnseType {
+public class Ort implements IAbstract, ISqlType, IComplexType {
     private int ortId;
     private int zipCode;
     private String name;
 
     @Override
     public AbstractionType getType() {
-        return AbstractionType.BUISSNES_OBJECT;
+        return AbstractionType.SQL_TYPE;
     }
 
     @Override
-    public IResopnseType toResponse() {
+    public IComplexType toComplexType() {
         return this;
     }
 
     @Override
-    public IBuissnesObject toBusinessObject() {
+    public ISqlType toSqlType() {
         return this;
     }
 }

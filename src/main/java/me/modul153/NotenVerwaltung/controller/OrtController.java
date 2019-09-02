@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/ort")
+@RequestMapping("/api/ort")
 public class OrtController {
     @GetMapping("/getOrt")
     public Ort getOrt(@RequestParam(value = "ortId") Integer id) {
-        Ort ort = OrtManager.getInstance().getBuissnesObject(id);
+        Ort ort = OrtManager.getInstance().getSqlType(id);
         if (ort == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ort with id not found " + id + ".");
         }

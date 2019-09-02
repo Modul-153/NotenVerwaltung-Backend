@@ -3,14 +3,14 @@ package me.modul153.NotenVerwaltung.managers;
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdresse;
 import me.modul153.NotenVerwaltung.data.model.Adresse;
-import me.modul153.NotenVerwaltung.data.response.AdressResponse;
+import me.modul153.NotenVerwaltung.data.response.AdresseComplex;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AdressManager extends AbstractManager<AbstractAdresse, Adresse, AdressResponse> {
+public class AdressManager extends AbstractManager<AbstractAdresse, Adresse, AdresseComplex> {
     private static AdressManager userManager = null;
     public static AdressManager getInstance() {
         if (userManager == null) {
@@ -52,13 +52,13 @@ public class AdressManager extends AbstractManager<AbstractAdresse, Adresse, Adr
                 System.out.println("could not save object with id " + key + ", adress not found!");
                 return false;
             }
-        }else if (value instanceof AdressResponse) {
-            AdressResponse adresse = (AdressResponse) value;
+        }else if (value instanceof AdresseComplex) {
+            AdresseComplex adresse = (AdresseComplex) value;
 
             if (adresse.getOrt() == null) {
                 System.out.println("could not save object with id " + key + ", ort not found!");
                 return false;
-            }else if (OrtManager.getInstance().getBuissnesObject(adresse.getOrt().getOrtId()) == null) {
+            }else if (OrtManager.getInstance().getSqlType(adresse.getOrt().getOrtId()) == null) {
                 OrtManager.getInstance().save(key, adresse.getOrt());
             }
             ortId = adresse.getOrt().getOrtId();
@@ -89,9 +89,9 @@ public class AdressManager extends AbstractManager<AbstractAdresse, Adresse, Adr
     @Override
     public boolean validate(AbstractAdresse value) {
         switch (value.getType()) {
-            case RESPONSE_TYPE:
-                return ((AdressResponse) value).getOrt() != null;
-            case BUISSNES_OBJECT:
+            case COMPLEX_TYPE:
+                return ((AdresseComplex) value).getOrt() != null;
+            case SQL_TYPE:
                 return OrtManager.getInstance().contains(((Adresse) value).getOrtId());
             default:
                 return false;
