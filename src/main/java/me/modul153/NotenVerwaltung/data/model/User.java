@@ -11,19 +11,16 @@ import me.modul153.NotenVerwaltung.managers.RoleManager;
 @Data
 public class User extends AbstractUser implements ISqlType {
     public int adresseId;
-    public int roleId;
 
-    public User(int userId, String name, String nachname, String userName, int adresseId, int roleId) {
+    public User(int userId, String name, String nachname, String userName, int adresseId) {
         super(userId, name, nachname, userName);
         this.adresseId = adresseId;
-        this.roleId = roleId;
     }
 
     @Override
     public UserComplex toComplexType() {
         return new UserComplex(getUserId(), getFirstname(), getLastname(), getUsername(),
-                AdressManager.getInstance().getComplexType(getAdresseId()),
-                RoleManager.getInstance().getSqlType(getRoleId()));
+                AdressManager.getInstance().getComplexType(getAdresseId()));
     }
     @Override
     public AbstractionType getType() {

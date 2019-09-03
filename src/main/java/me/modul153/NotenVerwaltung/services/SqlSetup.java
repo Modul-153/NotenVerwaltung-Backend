@@ -15,6 +15,9 @@ public class SqlSetup {
     }
 
     private void createUser() throws SQLException {
+        /*
+
+
         createOrtTable();
         createRole();
 
@@ -22,7 +25,7 @@ public class SqlSetup {
         createUserTable();
         createRoleUser();
         createUserAccount();
-        createUserAuth();
+        createUserAuth(); */
     }
 
 
