@@ -9,8 +9,8 @@ import me.modul153.NotenVerwaltung.api.IComplexType;
 
 @AllArgsConstructor
 @Data
-public class Ort implements IAbstract, ISqlType, IComplexType {
-    private int ortId;
+public class City implements IAbstract, ISqlType, IComplexType {
+    private int cityId;
     private int zipCode;
     private String name;
 

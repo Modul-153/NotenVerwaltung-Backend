@@ -118,11 +118,11 @@ body:
     "name": "Briant",
     "nachname": "Doughtery",
     "userName": "bdoughtery0",
-    "adresse": {
+    "adress": {
         "adressId": 1,
         "strasse": "Mallard",
         "nummer": "981",
-        "ort": {
+        "city": {
             "ortId": 1,
             "zipCode": 3984,
             "name": "Yulin"
@@ -134,13 +134,13 @@ body:
 ## Adresse
 
 ### getAdresse
-`GET http://localhost:8080/api/adresse/getAdresse?adressId=<id>`
+`GET http://localhost:8080/api/adress/getAdresse?adressId=<id>`
 
 ### getAdresseComplex
-`GET http://localhost:8080/api/adresse/getAdresse?adressId=<id>`
+`GET http://localhost:8080/api/adress/getAdresse?adressId=<id>`
 
 ### addAdresse
-`put http://localhost:8080/api/adresse/addAdresse/`
+`put http://localhost:8080/api/adress/addAdresse/`
 
 body: 
 
@@ -154,7 +154,7 @@ body:
 ```
 
 ### addAdresseComplex
-`PUT http://localhost:8080/api/adresse/addAdresseComplex/`
+`PUT http://localhost:8080/api/adress/addAdresseComplex/`
 
 body:
 
@@ -163,7 +163,7 @@ body:
     "adressId": 5,
     "strasse": "Welch",
     "nummer": "5",
-    "ort": {
+    "city": {
         "ortId": 5,
         "zipCode": 6160,
         "name": "Torre do Pinhão"
@@ -174,10 +174,10 @@ body:
 ## Ort
 
 ### getOrt
-`GET http://localhost:8080/api/ort/getOrt?ortId=<id>`
+`GET http://localhost:8080/api/city/getOrt?ortId=<id>`
 
 ### addOrt
-`PUT http://localhost:8080/api/ort/AddOrt/`
+`PUT http://localhost:8080/api/city/AddOrt/`
 
 body: 
 

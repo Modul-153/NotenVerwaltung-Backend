@@ -8,6 +8,6 @@ import me.modul153.NotenVerwaltung.api.IAbstract;
 @AllArgsConstructor
 public abstract class AbstractAdresse implements IAbstract {
     private int adressId;
-    private String strasse;
-    private int nummer;
+    private String street;
+    private int number;
 }

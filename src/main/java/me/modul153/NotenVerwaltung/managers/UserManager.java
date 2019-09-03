@@ -45,7 +45,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
     public AbstractUser getUser(String username) {
         for (Integer integer : listCache.get(0)) {
             AbstractUser abstractUser = this.get(integer);
-            if (abstractUser.getUserName().equalsIgnoreCase(username)) {
+            if (abstractUser.getUsername().equalsIgnoreCase(username)) {
                 return abstractUser;
             }
         }
@@ -64,15 +64,16 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
     @Override
     public User loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `vorname`,`nachname`,`username`,`adress_id` from `notenverwaltung`.`user` where `user_id` = ?");
+            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `firstname`,`lastname`,`username`,`adress_id`,`role_id` from `notenverwaltung`.`user` where `user_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
                 User user = new User(key,
-                        r.getString("vorname"),
-                        r.getString("nachname"),
+                        r.getString("firstname"),
+                        r.getString("lastname"),
                         r.getString("username"),
-                        r.getInt("adress_id"));
+                        r.getInt("adress_id"),
+                        r.getInt("role_id"));
                 return user;
             } else {
                 return null;
@@ -86,13 +87,20 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
     @Override
     public boolean saveIDataObjectComplex(Integer key, AbstractUser value) {
         int adresseId;
+        int roleId;
 
         if (value instanceof User) {
             User user = (User) value;
             adresseId = user.getAdresseId();
+            roleId = user.getRoleId();
 
             if (AdressManager.getInstance().getSqlType(user.getAdresseId()) == null) {
                 System.out.println("could not save object with id " + key + ", adress not found!");
+                return false;
+            }
+
+            if (RoleManager.getInstance().getSqlType(user.getRoleId()) == null) {
+                System.out.println("could not save object with id " + key + ", role not found!");
                 return false;
             }
         } else if (value instanceof UserComplex) {
@@ -104,6 +112,16 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             } else if (AdressManager.getInstance().getSqlType(user.getAdresse().getAdressId()) == null) {
                 AdressManager.getInstance().save(key, user.getAdresse());
             }
+
+
+            if (user.getRole() == null) {
+                System.out.println("could not save object with id " + key + ", role not found!");
+                return false;
+            } else if (RoleManager.getInstance().getSqlType(user.getRole().getRoleId()) == null) {
+                RoleManager.getInstance().save(key, user.getRole());
+            }
+
+            roleId = user.getRole().getRoleId();
             adresseId = user.getAdresse().getAdressId();
         } else {
             System.out.println("invalid object in " + getManagerName() + "-cache found.");
@@ -112,18 +130,20 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
 
         try {
             PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
-                    "INSERT INTO `user` (`user_id`, `vorname`, `nachname`, `username`, `adress_id`) VALUES (?, ?, ?, ?, ?) " +
-                            "ON DUPLICATE KEY UPDATE `vorname`=?,`nachname`=?,`username`=?,`adress_id`=?");
+                    "INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `username`, `adress_id`, `role_id`) VALUES (?, ?, ?, ?, ?, ?) " +
+                            "ON DUPLICATE KEY UPDATE `vorname`=?,`nachname`=?,`username`=?,`adress_id`=?, `role_id`=?");
             statement.setInt(1, value.getUserId());
-            statement.setString(2, value.getName());
-            statement.setString(3, value.getNachname());
-            statement.setString(4, value.getUserName());
+            statement.setString(2, value.getFirstname());
+            statement.setString(3, value.getLastname());
+            statement.setString(4, value.getUsername());
             statement.setInt(5, adresseId);
+            statement.setInt(6, roleId);
 
-            statement.setString(6, value.getName());
-            statement.setString(7, value.getNachname());
-            statement.setString(8, value.getUserName());
-            statement.setInt(9, adresseId);
+            statement.setString(7, value.getFirstname());
+            statement.setString(8, value.getLastname());
+            statement.setString(9, value.getUsername());
+            statement.setInt(10, adresseId);
+            statement.setInt(11, roleId);
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {

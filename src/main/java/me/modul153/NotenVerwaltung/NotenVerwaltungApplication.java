@@ -1,16 +1,14 @@
 package me.modul153.NotenVerwaltung;
 
 import me.modul153.NotenVerwaltung.managers.AdressManager;
-import me.modul153.NotenVerwaltung.managers.OrtManager;
+import me.modul153.NotenVerwaltung.managers.CityManager;
 import me.modul153.NotenVerwaltung.managers.UserManager;
 import me.modul153.NotenVerwaltung.services.SqlSetup;
 import net.myplayplanet.services.ServiceCluster;
 import net.myplayplanet.services.config.ConfigService;
 import net.myplayplanet.services.connection.ConnectionService;
-import net.myplayplanet.services.logger.Logger;
 import net.myplayplanet.services.logger.LoggerService;
 import net.myplayplanet.services.logger.sinks.MockSink;
-import net.myplayplanet.services.logger.sinks.MySQLSink;
 import net.myplayplanet.services.schedule.ScheduleService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -36,7 +34,7 @@ public class NotenVerwaltungApplication {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			ServiceCluster.shutdownCluster();
 			UserManager.getInstance().clearCache();
-			OrtManager.getInstance().clearCache();
+			CityManager.getInstance().clearCache();
 			AdressManager.getInstance().clearCache();
 		}));
 	}

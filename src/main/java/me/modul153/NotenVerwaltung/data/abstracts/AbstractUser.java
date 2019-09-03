@@ -8,7 +8,7 @@ import me.modul153.NotenVerwaltung.api.IAbstract;
 @Data
 public abstract class AbstractUser implements IAbstract {
     private int userId;
-    private String name;
-    private String nachname;
-    private String userName;
+    private String firstname;
+    private String lastname;
+    private String username;
 }

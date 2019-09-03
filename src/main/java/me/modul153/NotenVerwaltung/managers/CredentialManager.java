@@ -20,7 +20,7 @@ public class CredentialManager extends AbstractManager<Credentials, Credentials,
     @Override
     public Credentials loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `password` from user_accounts where user_id=?");
+            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `password` from usercredentials where user_id=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
@@ -38,7 +38,7 @@ public class CredentialManager extends AbstractManager<Credentials, Credentials,
     public boolean saveIDataObjectComplex(Integer key, Credentials value) {
         try {
             PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
-                    "insert into `user_accounts` (`user_id`, `password`) values (? ,?)  ON DUPLICATE KEY UPDATE `password`=?");
+                    "insert into `usercredentials` (`user_id`, `password`) values (? ,?)  ON DUPLICATE KEY UPDATE `password`=?");
             statement.setInt(1, value.getUserId());
             statement.setString(2, value.getPassword());
             statement.setString(3, value.getPassword());

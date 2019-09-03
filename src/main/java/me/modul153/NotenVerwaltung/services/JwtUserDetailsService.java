@@ -27,6 +27,6 @@ public class JwtUserDetailsService implements UserDetailsService{
         }
 
         Credentials credentials = CredentialManager.getInstance().get(user.getUserId());
-        return new User(user.getUserName(), credentials.getPassword(), new ArrayList<>());
+        return new User(user.getUsername(), credentials.getPassword(), new ArrayList<>());
     }
 }

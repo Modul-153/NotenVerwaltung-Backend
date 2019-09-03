@@ -1,30 +1,30 @@
 package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
-import me.modul153.NotenVerwaltung.data.abstracts.Ort;
+import me.modul153.NotenVerwaltung.data.abstracts.City;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class OrtManager extends AbstractManager<Ort, Ort, Ort> {
-    private static OrtManager ortManager = null;
-    public static OrtManager getInstance() {
-        if (ortManager == null) {
-            ortManager = new OrtManager();
+public class CityManager extends AbstractManager<City, City, City> {
+    private static CityManager cityManager = null;
+    public static CityManager getInstance() {
+        if (cityManager == null) {
+            cityManager = new CityManager();
         }
-        return ortManager;
+        return cityManager;
     }
 
     @Override
-    public Ort loadIDataObjectComplex(Integer key) {
+    public City loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `zipcode`,`name` from `notenverwaltung`.`ort` where `ort_id` = ?");
+            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `zipcode`,`name` from `notenverwaltung`.`city` where `city_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
-                return new Ort(key, r.getInt("zipcode"), r.getString("name"));
+                return new City(key, r.getInt("zipcode"), r.getString("name"));
             } else {
                 return null;
             }
@@ -35,11 +35,11 @@ public class OrtManager extends AbstractManager<Ort, Ort, Ort> {
     }
 
     @Override
-    public boolean saveIDataObjectComplex(Integer key, Ort value) {
+    public boolean saveIDataObjectComplex(Integer key, City value) {
         try {
             PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
-                    "INSERT INTO `ort` (`ort_id`, `zipcode`, `name`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `zipcode`=?,`name`=?");
-            statement.setInt(1, value.getOrtId());
+                    "INSERT INTO `city` (`city_id`, `zipcode`, `name`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `zipcode`=?,`name`=?");
+            statement.setInt(1, value.getCityId());
             statement.setInt(2, value.getZipCode());
             statement.setString(3, value.getName());
             statement.setInt(4, value.getZipCode());
@@ -56,6 +56,6 @@ public class OrtManager extends AbstractManager<Ort, Ort, Ort> {
 
     @Override
     public String getManagerName() {
-        return "ort";
+        return "city";
     }
 }
