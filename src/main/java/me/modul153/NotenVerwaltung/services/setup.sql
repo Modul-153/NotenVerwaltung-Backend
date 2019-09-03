@@ -1,16 +1,4 @@
 -- -----------------------------------------------------
--- Table `notenverwaltung`.`role`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`role`
-(
-    `role_id`  INT         NOT NULL AUTO_INCREMENT,
-    `rolename` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`role_id`)
-)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `notenverwaltung`.`city`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`city`
@@ -53,18 +41,11 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
     `user_id`    INT         NOT NULL AUTO_INCREMENT,
     `firstname`  VARCHAR(45) NOT NULL,
     `lastname`   VARCHAR(45) NOT NULL,
-    `role_id`    INT         NOT NULL,
     `username`   VARCHAR(45) NOT NULL,
     `address_id` INT         NOT NULL,
     PRIMARY KEY (`user_id`),
     UNIQUE INDEX `idPersonTable_UNIQUE` (`user_id` ASC),
-    INDEX `role_id_idx` (`role_id` ASC),
     INDEX `adress_id_idx` (`address_id` ASC),
-    CONSTRAINT `fk_role_id_user`
-        FOREIGN KEY (`role_id`)
-            REFERENCES `notenverwaltung`.`role` (`role_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
     CONSTRAINT `fk_adress_id_user`
         FOREIGN KEY (`address_id`)
             REFERENCES `notenverwaltung`.`adress` (`adress_id`)
