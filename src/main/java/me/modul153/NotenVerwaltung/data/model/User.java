@@ -6,7 +6,6 @@ import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
 import me.modul153.NotenVerwaltung.data.complex.UserComplex;
 import me.modul153.NotenVerwaltung.managers.AdressManager;
-import me.modul153.NotenVerwaltung.managers.RoleManager;
 
 @Data
 public class User extends AbstractUser implements ISqlType {
