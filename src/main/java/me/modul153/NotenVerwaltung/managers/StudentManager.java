@@ -11,6 +11,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class StudentManager extends AbstractManager<AbstractStudent, Student, StudentComplex> {
+    private static StudentManager studentManager = null;
+    public static StudentManager getInstance() {
+        if (studentManager == null) {
+            studentManager = new StudentManager();
+        }
+        return studentManager;
+    }
+
     @Override
     public AbstractStudent loadIDataObjectComplex(Integer key) {
         try {

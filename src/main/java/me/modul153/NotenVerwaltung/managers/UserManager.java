@@ -14,7 +14,16 @@ import java.util.ArrayList;
 
 public class UserManager extends AbstractManager<AbstractUser, User, UserComplex> {
 
-    Cache<Integer, ArrayList<Integer>> listCache;
+    private static UserManager userManager = null;
+
+    public static UserManager getInstance() {
+        if (userManager == null) {
+            userManager = new UserManager();
+        }
+        return userManager;
+    }
+
+    private Cache<Integer, ArrayList<Integer>> listCache;
 
     public UserManager() {
         super();
@@ -50,15 +59,6 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             }
         }
         return null;
-    }
-
-    private static UserManager userManager = null;
-
-    public static UserManager getInstance() {
-        if (userManager == null) {
-            userManager = new UserManager();
-        }
-        return userManager;
     }
 
     @Override

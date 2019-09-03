@@ -1,11 +1,8 @@
 package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractStudent;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
-import me.modul153.NotenVerwaltung.data.complex.StudentComplex;
 import me.modul153.NotenVerwaltung.data.complex.TeacherComplex;
-import me.modul153.NotenVerwaltung.data.model.Student;
 import me.modul153.NotenVerwaltung.data.model.Teacher;
 import net.myplayplanet.services.connection.ConnectionManager;
 
@@ -14,6 +11,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, TeacherComplex> {
+    private static TeacherManager teacherManager = null;
+    public static TeacherManager getInstance() {
+        if (teacherManager == null) {
+            teacherManager = new TeacherManager();
+        }
+        return teacherManager;
+    }
     @Override
     public AbstractTeacher loadIDataObjectComplex(Integer key) {
         try {

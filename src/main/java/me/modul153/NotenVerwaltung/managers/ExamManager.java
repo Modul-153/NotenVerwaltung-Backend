@@ -12,6 +12,13 @@ import java.sql.SQLException;
 import java.util.Date;
 
 public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex> {
+    private static ExamManager examManager = null;
+    public static ExamManager getInstance() {
+        if (examManager == null) {
+            examManager = new ExamManager();
+        }
+        return examManager;
+    }
 
     @Override
     public AbstractExam loadIDataObjectComplex(Integer key) {
