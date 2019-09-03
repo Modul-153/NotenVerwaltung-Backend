@@ -3,7 +3,6 @@ package me.modul153.NotenVerwaltung.managers;
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractStudent;
 import me.modul153.NotenVerwaltung.data.complex.StudentComplex;
-import me.modul153.NotenVerwaltung.data.complex.UserComplex;
 import me.modul153.NotenVerwaltung.data.model.Student;
 import net.myplayplanet.services.connection.ConnectionManager;
 

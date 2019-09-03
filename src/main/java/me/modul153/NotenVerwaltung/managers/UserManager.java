@@ -145,8 +145,6 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
         }
     }
 
-
-
     @Override
     public String getManagerName() {
         return "user";
