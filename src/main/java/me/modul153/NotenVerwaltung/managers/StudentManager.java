@@ -83,21 +83,17 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
 
     @Override
     public boolean validate(AbstractStudent value) {
-        int userId;
-
         if (value instanceof ISqlType) {
-            userId = ((Student)value).getUserId();
+            return UserManager.getInstance().contains(((Student)value).getUserId());
         }else if (value instanceof IComplexType) {
             StudentComplex complex = (StudentComplex) value;
             if (complex.getUser() == null) {
                 return false;
             }
-            userId = complex.getUser().getUserId();
+            return UserManager.getInstance().validate(complex.getUser());
         }else {
             return false;
         }
-
-        return UserManager.getInstance().contains(userId);
     }
 
     @Override

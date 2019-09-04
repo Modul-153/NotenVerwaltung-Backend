@@ -38,16 +38,16 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`adress`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
 (
-    `user_id`    INT         NOT NULL AUTO_INCREMENT,
-    `firstname`  VARCHAR(45) NOT NULL,
-    `lastname`   VARCHAR(45) NOT NULL,
-    `username`   VARCHAR(45) NOT NULL,
-    `address_id` INT         NOT NULL,
+    `user_id`   INT         NOT NULL AUTO_INCREMENT,
+    `firstname` VARCHAR(45) NOT NULL,
+    `lastname`  VARCHAR(45) NOT NULL,
+    `username`  VARCHAR(45) NOT NULL,
+    `adress_id` INT         NOT NULL,
     PRIMARY KEY (`user_id`),
     UNIQUE INDEX `idPersonTable_UNIQUE` (`user_id` ASC),
-    INDEX `adress_id_idx` (`address_id` ASC),
+    INDEX `adress_id_idx` (`adress_id` ASC),
     CONSTRAINT `fk_adress_id_user`
-        FOREIGN KEY (`address_id`)
+        FOREIGN KEY (`adress_id`)
             REFERENCES `notenverwaltung`.`adress` (`adress_id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION

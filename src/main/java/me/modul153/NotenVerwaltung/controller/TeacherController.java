@@ -18,8 +18,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/teacher")
 public class TeacherController {
-    @GetMapping("/get")
-    public Teacher getTeacher(@RequestParam(value = "teacherId") Integer id) {
+    @GetMapping("/get/{id}")
+    public Teacher getTeacher(@PathVariable Integer id) {
         AbstractTeacher teacher = TeacherManager.getInstance().get(id);
 
         if (teacher == null) {
@@ -34,8 +34,8 @@ public class TeacherController {
             return null;
         }
     }
-    @GetMapping("/getComplex")
-    public TeacherComplex getTeacherComplex(@RequestParam(value = "teacherId") Integer id) {
+    @GetMapping("/getComplex/{id}")
+    public TeacherComplex getTeacherComplex(@PathVariable Integer id) {
         AbstractTeacher teacher = TeacherManager.getInstance().get(id);
 
         if (teacher == null) {

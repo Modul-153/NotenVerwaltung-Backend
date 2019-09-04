@@ -48,7 +48,7 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
     }
 
     public boolean contains(Integer key) {
-        return iDataObjectCache.get(key) != null;
+        return get(key) != null;
     }
 
     public B getSqlType(Integer key) {

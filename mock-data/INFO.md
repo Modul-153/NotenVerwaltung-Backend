@@ -20,6 +20,11 @@ Exam: https://mockaroo.com/449d1c40
 
 ## advanced
 
+teacher: 
+
+student: https://mockaroo.com/c7fd0c50
+
+
 User-request: https://mockaroo.com/9fcc9080
 
 Adresse-Request: https://mockaroo.com/schemas/187301

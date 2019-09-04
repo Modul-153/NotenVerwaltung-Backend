@@ -9,17 +9,17 @@ import me.modul153.NotenVerwaltung.managers.AdressManager;
 
 @Data
 public class User extends AbstractUser implements ISqlType {
-    public int adresseId;
+    public int adressId;
 
-    public User(int userId, String name, String nachname, String userName, int adresseId) {
+    public User(int userId, String name, String nachname, String userName, int adressId) {
         super(userId, name, nachname, userName);
-        this.adresseId = adresseId;
+        this.adressId = adressId;
     }
 
     @Override
     public UserComplex toComplexType() {
         return new UserComplex(getUserId(), getFirstname(), getLastname(), getUsername(),
-                AdressManager.getInstance().getComplexType(getAdresseId()));
+                AdressManager.getInstance().getComplexType(getAdressId()));
     }
     @Override
     public AbstractionType getType() {

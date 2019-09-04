@@ -69,7 +69,7 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
 
         try {
             PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
-                    "INSERT INTO `adresse` (`adress_id`, `strasse`, `nummer`, `ort_id`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `strasse`=?,`nummer`=?,`ort_id`=?");
+                    "INSERT INTO `adress` (`adress_id`, `street`, `number`, `city_id`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `street`=?,`number`=?,`city_id`=?");
             statement.setInt(1, value.getAdressId());
             statement.setString(2, value.getStreet());
             statement.setInt(3, value.getNumber());

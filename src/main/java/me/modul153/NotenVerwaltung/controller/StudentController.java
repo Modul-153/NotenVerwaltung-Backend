@@ -14,8 +14,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
-    @GetMapping("/get")
-    public Student getStudent(@RequestParam(value = "studentId") Integer id) {
+    @GetMapping("/get/{id}")
+    public Student getStudent(@PathVariable Integer id) {
         AbstractStudent student = StudentManager.getInstance().get(id);
 
         if (student == null) {
@@ -30,8 +30,8 @@ public class StudentController {
             return null;
         }
     }
-    @GetMapping("/getComplex")
-    public StudentComplex getStudentComplex(@RequestParam(value = "studentId") Integer id) {
+    @GetMapping("/getComplex/{id}")
+    public StudentComplex getStudentComplex(@PathVariable Integer id) {
         AbstractStudent student = StudentManager.getInstance().get(id);
 
         if (student == null) {

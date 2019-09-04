@@ -89,9 +89,9 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
 
         if (value instanceof User) {
             User user = (User) value;
-            adresseId = user.getAdresseId();
+            adresseId = user.getAdressId();
 
-            if (AdressManager.getInstance().getSqlType(user.getAdresseId()) == null) {
+            if (AdressManager.getInstance().getSqlType(user.getAdressId()) == null) {
                 System.out.println("could not save object with id " + key + ", adress not found!");
                 return false;
             }
@@ -114,7 +114,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
         try {
             PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                     "INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `username`, `adress_id`) VALUES (?, ?, ?, ?, ?) " +
-                            "ON DUPLICATE KEY UPDATE `vorname`=?,`nachname`=?,`username`=?,`adress_id`=?");
+                            "ON DUPLICATE KEY UPDATE `firstname`=?,`lastname`=?,`username`=?,`adress_id`=?");
             statement.setInt(1, value.getUserId());
             statement.setString(2, value.getFirstname());
             statement.setString(3, value.getLastname());
@@ -139,7 +139,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             case COMPLEX_TYPE:
                 return ((UserComplex) value).getAdresse() != null;
             case SQL_TYPE:
-                return AdressManager.getInstance().contains(((User) value).getAdresseId());
+                return AdressManager.getInstance().contains(((User) value).getAdressId());
             default:
                 return false;
         }
