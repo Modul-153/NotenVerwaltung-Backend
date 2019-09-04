@@ -7,19 +7,26 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/ort")
-public class OrtController {
-    @GetMapping("/getOrt")
-    public City getOrt(@RequestParam(value = "ortId") Integer id) {
+@RequestMapping("/api/city")
+public class CityController {
+    @GetMapping("/get/{id}")
+    public City get(@PathVariable Integer id) {
         City city = CityManager.getInstance().getSqlType(id);
         if (city == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ort with id not found " + id + ".");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City with id '" + id +"' not found.");
         }
         return city;
     }
 
-    @PutMapping("/addOrt/")
-    public void addOrt(@RequestBody City city) {
+    @PutMapping("/add/")
+    public void add(@RequestBody City city) {
         CityManager.getInstance().add(city.getCityId(), city);
+    }
+
+    @PutMapping("/addMultiple/")
+    public void addMultiple(@RequestBody City[] cities) {
+        for (City city : cities) {
+            CityManager.getInstance().add(city.getCityId(), city);
+        }
     }
 }

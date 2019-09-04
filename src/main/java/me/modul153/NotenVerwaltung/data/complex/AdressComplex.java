@@ -3,12 +3,12 @@ package me.modul153.NotenVerwaltung.data.complex;
 import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.IComplexType;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdresse;
+import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdress;
 import me.modul153.NotenVerwaltung.data.abstracts.City;
 import me.modul153.NotenVerwaltung.data.model.Adress;
 
 @Data
-public class AdressComplex extends AbstractAdresse implements IComplexType {
+public class AdressComplex extends AbstractAdress implements IComplexType {
     private City city;
 
     public AdressComplex(int adressId, String strasse, int nummer, City city) {

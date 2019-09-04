@@ -1,7 +1,7 @@
 package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdresse;
+import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdress;
 import me.modul153.NotenVerwaltung.data.model.Adress;
 import me.modul153.NotenVerwaltung.data.complex.AdressComplex;
 import net.myplayplanet.services.connection.ConnectionManager;
@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AdressManager extends AbstractManager<AbstractAdresse, Adress, AdressComplex> {
+public class AdressManager extends AbstractManager<AbstractAdress, Adress, AdressComplex> {
     private static AdressManager adressManager = null;
     public static AdressManager getInstance() {
         if (adressManager == null) {
@@ -41,7 +41,7 @@ public class AdressManager extends AbstractManager<AbstractAdresse, Adress, Adre
     }
 
     @Override
-    public boolean saveIDataObjectComplex(Integer key, AbstractAdresse value) {
+    public boolean saveIDataObjectComplex(Integer key, AbstractAdress value) {
         int ortId;
 
         if (value instanceof Adress) {
@@ -87,7 +87,7 @@ public class AdressManager extends AbstractManager<AbstractAdresse, Adress, Adre
     }
 
     @Override
-    public boolean validate(AbstractAdresse value) {
+    public boolean validate(AbstractAdress value) {
         switch (value.getType()) {
             case COMPLEX_TYPE:
                 return ((AdressComplex) value).getCity() != null;

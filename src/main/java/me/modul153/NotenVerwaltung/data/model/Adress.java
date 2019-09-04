@@ -3,12 +3,12 @@ package me.modul153.NotenVerwaltung.data.model;
 import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdresse;
+import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdress;
 import me.modul153.NotenVerwaltung.managers.CityManager;
 import me.modul153.NotenVerwaltung.data.complex.AdressComplex;
 
 @Data
-public class Adress extends AbstractAdresse implements ISqlType {
+public class Adress extends AbstractAdress implements ISqlType {
     private int cityId;
 
     public Adress(int adressId, String strasse, int nummer, int cityId) {
