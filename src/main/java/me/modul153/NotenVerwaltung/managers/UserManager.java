@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UserManager extends AbstractManager<AbstractUser, User, UserComplex> {
 
@@ -35,6 +36,29 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                 return null;
             }
         });
+    }
+
+    @Override
+    public HashMap<Integer, AbstractUser> loadAllObjects() {
+        HashMap<Integer, AbstractUser> map = new HashMap<>();
+        try {
+            PreparedStatement statement = SqlSetup.getStatement("select `user_id`,`firstname`,`lastname`,`username`,`adress_id` from `notenverwaltung`.`user`");
+            ResultSet r = statement.executeQuery();
+
+            while (r.next()) {
+                int user_id = r.getInt("user_id");
+                User user = new User(user_id,
+                        r.getString("firstname"),
+                        r.getString("lastname"),
+                        r.getString("username"),
+                        r.getInt("adress_id"));
+                map.put(user_id, user);
+            }
+            return map;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static UserManager getInstance() {

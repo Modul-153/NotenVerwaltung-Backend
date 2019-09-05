@@ -4,28 +4,64 @@ import net.myplayplanet.services.cache.AbstractSaveProvider;
 import net.myplayplanet.services.cache.Cache;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & IAbstract, R extends IComplexType & IAbstract> {
 
     private Cache<Integer, M> iDataObjectCache;
     private List<String> notSave;
+    private HashMap<Integer, String> dontSave;
+    private List<Integer> oneTimeNoSave;
 
     public AbstractManager() {
         notSave = new ArrayList<>();
-        iDataObjectCache = new Cache<>(getManagerName() + "-cache", -1L, this::loadIDataObjectComplex, new AbstractSaveProvider<Integer, M>() {
+        dontSave = new HashMap<>();
+        oneTimeNoSave = new ArrayList<>();
+        iDataObjectCache = new Cache<>(getManagerName() + "-cache", -1L, key -> {
+            M m = loadIDataObjectComplex(key);
+
+            if (m != null) {
+                dontSave.put(key, m.toJson());
+            }
+
+            return m;
+        }, new AbstractSaveProvider<Integer, M>() {
             @Override
-            public boolean save(Integer integer, M user) {
-                String o = user.toJson();
+            public boolean save(Integer key, M value) {
+                String o = value.toJson();
                 if (!notSave.contains(o)) {
-                    return saveIDataObjectComplex(integer, user);
+                    if (oneTimeNoSave.contains(key)) {
+                        oneTimeNoSave.remove(key);
+                        return true;
+                    }
+                    if (!dontSave.containsKey(key) || !dontSave.get(key).equals(o)) {
+                        dontSave.remove(key);
+                        return saveIDataObjectComplex(key, value);
+                    }else {
+                        System.out.println(value.getClass().getSimpleName() + " Object with id " + key + " does not need to be saved.");
+                        return true;
+                    }
                 } else {
                     notSave.remove(o);
                     return true;
                 }
             }
+
+            @Override
+            public HashMap<Integer, M> load() {
+                HashMap<Integer, M> integerMHashMap = loadAllObjects();
+                oneTimeNoSave.addAll(integerMHashMap.keySet());
+                return integerMHashMap;
+            }
         });
     }
+
+
+    /***
+     * SQL implemention des ladens alles Objekte, wird ein mal am start gemacht.
+     */
+    public abstract HashMap<Integer, M> loadAllObjects();
 
     /***
      * SQL implemention des ladens eines Objektes

@@ -9,6 +9,7 @@ import me.modul153.NotenVerwaltung.services.SqlSetup;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class AdressManager extends AbstractManager<AbstractAdress, Adress, AdressComplex> {
     private static AdressManager adressManager = null;
@@ -18,6 +19,28 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
             adressManager = new AdressManager();
         }
         return adressManager;
+    }
+
+    @Override
+    public HashMap<Integer, AbstractAdress> loadAllObjects() {
+        HashMap<Integer, AbstractAdress> map = new HashMap<>();
+        try {
+            PreparedStatement statement = SqlSetup.getStatement("select `adress_id`,`street`,`number`,`city_id` from `notenverwaltung`.`adress`");
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                int key = set.getInt("adress_id");
+                Adress adress = new Adress(key,
+                        set.getString("street"),
+                        set.getInt("number"),
+                        set.getInt("city_id"));
+                map.put(key, adress);
+            }
+
+            return map;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

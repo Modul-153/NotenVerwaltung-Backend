@@ -7,6 +7,7 @@ import me.modul153.NotenVerwaltung.services.SqlSetup;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class CityManager extends AbstractManager<City, City, City> {
     private static CityManager cityManager = null;
@@ -16,6 +17,25 @@ public class CityManager extends AbstractManager<City, City, City> {
             cityManager = new CityManager();
         }
         return cityManager;
+    }
+
+    @Override
+    public HashMap<Integer, City> loadAllObjects() {
+        HashMap<Integer, City> map = new HashMap<>();
+        try {
+            PreparedStatement statement = SqlSetup.getStatement("select `city_id`,`zipcode`,`name` from `notenverwaltung`.`city`");
+
+            ResultSet set = statement.executeQuery();
+
+            while (set.next()) {
+                int key = set.getInt("city_id");
+                map.put(key, new City(key, set.getInt("zipcode"), set.getString("name")));
+            }
+            return map;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 
 public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex> {
     private static ExamManager examManager = null;
@@ -19,6 +20,26 @@ public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex
             examManager = new ExamManager();
         }
         return examManager;
+    }
+
+    @Override
+    public HashMap<Integer, AbstractExam> loadAllObjects() {
+        HashMap<Integer, AbstractExam> map = new HashMap<>();
+        try {
+            PreparedStatement statement = SqlSetup.getStatement("select `exam_id`,`mark`,`date`,`user_id` from `exams`");
+            ResultSet set = statement.executeQuery();
+
+            while (set.next()) {
+                int key = set.getInt("exam_id");
+                map.put(key, new Exam(key, set.getInt("mark"),
+                        new Date(set.getDate("date").getTime()),
+                        set.getInt("user_id")));
+            }
+            return map;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import me.modul153.NotenVerwaltung.services.SqlSetup;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class CredentialManager extends AbstractManager<Credential, Credential, Credential> {
     private static CredentialManager credentialManager = null;
@@ -17,6 +18,25 @@ public class CredentialManager extends AbstractManager<Credential, Credential, C
             credentialManager = new CredentialManager();
         }
         return credentialManager;
+    }
+
+    @Override
+    public HashMap<Integer, Credential> loadAllObjects() {
+        HashMap<Integer, Credential> map = new HashMap<>();
+        try {
+            PreparedStatement statement = SqlSetup.getStatement("select `user_id`,`password` from usercredentials");
+            ResultSet set = statement.executeQuery();
+
+            while (set.next()) {
+                int key = set.getInt("user_id");
+                map.put(key, new Credential(key, set.getString("password")));
+            }
+
+            return map;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

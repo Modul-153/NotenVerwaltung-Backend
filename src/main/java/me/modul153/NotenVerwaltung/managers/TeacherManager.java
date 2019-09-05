@@ -4,6 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.api.IComplexType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
+import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
 import me.modul153.NotenVerwaltung.data.complex.TeacherComplex;
 import me.modul153.NotenVerwaltung.data.model.Teacher;
 import me.modul153.NotenVerwaltung.services.SqlSetup;
@@ -11,6 +12,7 @@ import me.modul153.NotenVerwaltung.services.SqlSetup;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, TeacherComplex> {
     private static TeacherManager teacherManager = null;
@@ -20,6 +22,24 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
             teacherManager = new TeacherManager();
         }
         return teacherManager;
+    }
+
+    @Override
+    public HashMap<Integer, AbstractTeacher> loadAllObjects() {
+        HashMap<Integer, AbstractTeacher> map = new HashMap<>();
+        try {
+            PreparedStatement statement = SqlSetup.getStatement("select `teacher_id`,`user_id` from `teacher`");
+            ResultSet set = statement.executeQuery();
+
+            while (set.next()) {
+                int id = set.getInt("teacher_id");
+                map.put(id, new Teacher(id, set.getInt("user_id")));
+            }
+            return map;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
