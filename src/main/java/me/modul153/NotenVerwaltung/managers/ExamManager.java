@@ -4,6 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractExam;
 import me.modul153.NotenVerwaltung.data.complex.ExamComplex;
 import me.modul153.NotenVerwaltung.data.model.Exam;
+import me.modul153.NotenVerwaltung.services.Counter;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
@@ -23,7 +24,8 @@ public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex
     @Override
     public AbstractExam loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `mark`,`date`,`user_id` from `exams` where exam_id=?");
+            Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `mark`,`date`,`user_id` from `exams` where exam_id=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
@@ -68,7 +70,8 @@ public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex
         }
 
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                     "INSERT INTO `exams` (`exam_id`, `mark`, `date`, `user_id`) VALUES (?, ?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE `mark`=?, `date`=?,`user_id`=?");
             statement.setInt(1, key);

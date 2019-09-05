@@ -6,6 +6,7 @@ import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractStudent;
 import me.modul153.NotenVerwaltung.data.complex.StudentComplex;
 import me.modul153.NotenVerwaltung.data.model.Student;
+import me.modul153.NotenVerwaltung.services.Counter;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
@@ -24,7 +25,8 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
     @Override
     public AbstractStudent loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `user_id` from `student` where `student_id`=?");
+            Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `user_id` from `student` where `student_id`=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
@@ -67,7 +69,8 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
         }
 
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                     "INSERT INTO `student` (`student_id`, `user_id`) VALUES (?, ?) " +
                             "ON DUPLICATE KEY UPDATE `user_id`=?");
             statement.setInt(1, value.getStudentId());

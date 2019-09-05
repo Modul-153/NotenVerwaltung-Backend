@@ -4,6 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdress;
 import me.modul153.NotenVerwaltung.data.model.Adress;
 import me.modul153.NotenVerwaltung.data.complex.AdressComplex;
+import me.modul153.NotenVerwaltung.services.Counter;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
@@ -22,7 +23,9 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
     @Override
     public Adress loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `street`,`number`,`city_id` from `notenverwaltung`.`adress` where `adress_id` = ?");
+            Counter.connectionCounter++;
+            Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `street`,`number`,`city_id` from `notenverwaltung`.`adress` where `adress_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -68,7 +71,8 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
         }
 
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                     "INSERT INTO `adress` (`adress_id`, `street`, `number`, `city_id`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `street`=?,`number`=?,`city_id`=?");
             statement.setInt(1, value.getAdressId());
             statement.setString(2, value.getStreet());

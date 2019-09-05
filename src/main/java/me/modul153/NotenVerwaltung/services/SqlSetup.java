@@ -30,6 +30,7 @@ public class SqlSetup {
 
 
     private void createOrtTable() throws SQLException {
+        Counter.connectionCounter++;
         PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                 "CREATE TABLE IF NOT EXISTS `notenverwaltung`.`ort` " +
                         "(" +
@@ -43,6 +44,7 @@ public class SqlSetup {
     }
 
     private void createAdresseTable() throws SQLException {
+        Counter.connectionCounter++;
         PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                 "CREATE TABLE IF NOT EXISTS `notenverwaltung`.`adresse` " +
                         "(" +
@@ -57,6 +59,7 @@ public class SqlSetup {
         statement.executeUpdate();
     }
     private void createUserTable() throws SQLException {
+        Counter.connectionCounter++;
         PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                 "CREATE TABLE iF NOT EXISTS `notenverwaltung`.`user` " +
                         "( " +
@@ -73,6 +76,7 @@ public class SqlSetup {
     }
 
     private void createRole() throws SQLException {
+        Counter.connectionCounter++;
         PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                 "CREATE TABLE IF NOT EXISTS `notenverwaltung`.`role` " +
                         "( " +
@@ -85,6 +89,7 @@ public class SqlSetup {
     }
 
     private void createRoleUser() throws SQLException {
+        Counter.connectionCounter++;
         PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                 "CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user_roles` " +
                         "( " +
@@ -99,6 +104,7 @@ public class SqlSetup {
     }
 
     private void createUserAuth() throws SQLException {
+        Counter.connectionCounter++;
         PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                 "CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user_authentication` " +
                         "( " +
@@ -112,6 +118,7 @@ public class SqlSetup {
     }
 
     private void createUserAccount() throws SQLException {
+        Counter.connectionCounter++;
         PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                 "CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user_accounts` " +
                         "( " +

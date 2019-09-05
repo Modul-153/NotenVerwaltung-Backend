@@ -23,7 +23,7 @@ public class Class extends AbstractClass implements ISqlType {
     }
 
     @Override
-    public IComplexType toComplexType() {
+    public ClassComplex toComplexType() {
         return new ClassComplex(getClassId(),getName(), SchoolManager.getInstance().getSqlType(getSchoolId()));
     }
 }

@@ -4,6 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
 import me.modul153.NotenVerwaltung.data.complex.UserComplex;
 import me.modul153.NotenVerwaltung.data.model.User;
+import me.modul153.NotenVerwaltung.services.Counter;
 import net.myplayplanet.services.cache.Cache;
 import net.myplayplanet.services.connection.ConnectionManager;
 
@@ -31,7 +32,8 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             ArrayList<Integer> result = new ArrayList<>();
 
             try {
-                PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `user_id` from `notenverwaltung`.`user`");
+                Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `user_id` from `notenverwaltung`.`user`");
                 ResultSet set = statement.executeQuery();
 
                 while (set.next()) {
@@ -64,7 +66,8 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
     @Override
     public User loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `firstname`,`lastname`,`username`,`adress_id` from `notenverwaltung`.`user` where `user_id` = ?");
+            Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `firstname`,`lastname`,`username`,`adress_id` from `notenverwaltung`.`user` where `user_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -112,7 +115,8 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
         }
 
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                     "INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `username`, `adress_id`) VALUES (?, ?, ?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE `firstname`=?,`lastname`=?,`username`=?,`adress_id`=?");
             statement.setInt(1, value.getUserId());

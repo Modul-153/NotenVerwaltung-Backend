@@ -3,7 +3,7 @@ package me.modul153.NotenVerwaltung.services;
 import java.util.ArrayList;
 
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
-import me.modul153.NotenVerwaltung.data.abstracts.Credentials;
+import me.modul153.NotenVerwaltung.data.abstracts.Credential;
 import me.modul153.NotenVerwaltung.managers.CredentialManager;
 import me.modul153.NotenVerwaltung.managers.UserManager;
 import org.springframework.security.core.userdetails.User;
@@ -26,7 +26,7 @@ public class JwtUserDetailsService implements UserDetailsService{
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
 
-        Credentials credentials = CredentialManager.getInstance().get(user.getUserId());
-        return new User(user.getUsername(), credentials.getPassword(), new ArrayList<>());
+        Credential credential = CredentialManager.getInstance().get(user.getUserId());
+        return new User(user.getUsername(), credential.getPassword(), new ArrayList<>());
     }
 }

@@ -1,9 +1,12 @@
 package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
+import me.modul153.NotenVerwaltung.api.IComplexType;
+import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractSchool;
 import me.modul153.NotenVerwaltung.data.complex.SchoolComplex;
 import me.modul153.NotenVerwaltung.data.model.School;
+import me.modul153.NotenVerwaltung.services.Counter;
 import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
@@ -21,6 +24,7 @@ public class SchoolManager extends AbstractManager<AbstractSchool, School, Schoo
 
     @Override
     public AbstractSchool loadIDataObjectComplex(Integer key) {
+        Counter.connectionCounter++;
         PreparedStatement statement = null;
         try {
             statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `schoolname`,`adress_id` from `school` where `school_id`=?");
@@ -67,7 +71,8 @@ public class SchoolManager extends AbstractManager<AbstractSchool, School, Schoo
         }
 
         try {
-            PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            Counter.connectionCounter++;
+        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
                     "INSERT INTO `school` (`school_id`, `schoolname`,`adress_id`) VALUES (?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE `schoolname`=?, `adress_id`=?");
             statement.setInt(1, key);
@@ -82,6 +87,17 @@ public class SchoolManager extends AbstractManager<AbstractSchool, School, Schoo
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean validate(AbstractSchool value) {
+        if (value instanceof ISqlType) {
+            return AdressManager.getInstance().contains(((School) value).getAdressId());
+        }else if (value instanceof IComplexType) {
+            return AdressManager.getInstance().validate(((SchoolComplex) value).getAdress());
+        }else {
             return false;
         }
     }

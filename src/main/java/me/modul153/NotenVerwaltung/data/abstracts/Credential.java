@@ -9,7 +9,7 @@ import me.modul153.NotenVerwaltung.api.ISqlType;
 
 @Data
 @AllArgsConstructor
-public class Credentials implements IAbstract, ISqlType, IComplexType {
+public class Credential implements IAbstract, ISqlType, IComplexType {
     int userId;
     String password;
 

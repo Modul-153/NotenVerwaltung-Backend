@@ -111,20 +111,20 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class`
 
 
 -- -----------------------------------------------------
--- Table `notenverwaltung`.`userclass`
+-- Table `notenverwaltung`.`class_members`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`userclass`
+CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class_members`
 (
     `user_id`  INT NOT NULL,
     `class_id` INT NOT NULL,
     UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC),
     INDEX `class_id_idx` (`class_id` ASC),
-    CONSTRAINT `fk_user_id_userclass`
+    CONSTRAINT `fk_user_id_class_members`
         FOREIGN KEY (`user_id`)
             REFERENCES `notenverwaltung`.`user` (`user_id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION,
-    CONSTRAINT `fk_class_id_userclass`
+    CONSTRAINT `fk_class_id_class_members`
         FOREIGN KEY (`class_id`)
             REFERENCES `notenverwaltung`.`class` (`class_id`)
             ON DELETE NO ACTION
