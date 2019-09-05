@@ -13,13 +13,13 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
 
     public AbstractManager() {
         notSave = new ArrayList<>();
-        iDataObjectCache = new Cache<>(getManagerName() + "-cache", -1L,this::loadIDataObjectComplex, new AbstractSaveProvider<Integer, M>() {
+        iDataObjectCache = new Cache<>(getManagerName() + "-cache", -1L, this::loadIDataObjectComplex, new AbstractSaveProvider<Integer, M>() {
             @Override
             public boolean save(Integer integer, M user) {
                 String o = user.toJson();
                 if (!notSave.contains(o)) {
                     return saveIDataObjectComplex(integer, user);
-                }else {
+                } else {
                     notSave.remove(o);
                     return true;
                 }
@@ -42,7 +42,7 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
             setSave(value, true);
             this.add(key, value);
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -56,10 +56,10 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
 
         if (abstr instanceof ISqlType) {
             return (B) abstr;
-        }else if (abstr instanceof IComplexType) {
+        } else if (abstr instanceof IComplexType) {
             IComplexType rt = (IComplexType) abstr;
             return (B) rt.toSqlType();
-        }else {
+        } else {
             return null;
         }
     }
@@ -68,7 +68,7 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
         String e = object.toJson();
         if (dontSave) {
             notSave.add(e);
-        }else {
+        } else {
             notSave.remove(e);
         }
     }
@@ -78,10 +78,10 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
 
         if (abstr instanceof IComplexType) {
             return (R) abstr;
-        }else if (abstr instanceof ISqlType) {
+        } else if (abstr instanceof ISqlType) {
             ISqlType rt = (ISqlType) abstr;
             return (R) rt.toComplexType();
-        }else {
+        } else {
             return null;
         }
     }
@@ -93,7 +93,7 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
     public void add(Integer key, M value) {
         if (validate(value)) {
             iDataObjectCache.update(key, value);
-        }else {
+        } else {
             System.out.println("invalid object with id " + key);
         }
     }
@@ -104,6 +104,7 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
 
     /**
      * this method will be called before adding and if it returns false it will not add the item.
+     *
      * @return
      */
     public boolean validate(M value) {

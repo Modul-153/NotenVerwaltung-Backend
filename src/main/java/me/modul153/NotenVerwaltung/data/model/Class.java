@@ -2,7 +2,6 @@ package me.modul153.NotenVerwaltung.data.model;
 
 import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
-import me.modul153.NotenVerwaltung.api.IComplexType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractClass;
 import me.modul153.NotenVerwaltung.data.complex.ClassComplex;
@@ -24,6 +23,6 @@ public class Class extends AbstractClass implements ISqlType {
 
     @Override
     public ClassComplex toComplexType() {
-        return new ClassComplex(getClassId(),getName(), SchoolManager.getInstance().getSqlType(getSchoolId()));
+        return new ClassComplex(getClassId(), getName(), SchoolManager.getInstance().getSqlType(getSchoolId()));
     }
 }

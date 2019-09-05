@@ -2,10 +2,9 @@ package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdress;
-import me.modul153.NotenVerwaltung.data.model.Adress;
 import me.modul153.NotenVerwaltung.data.complex.AdressComplex;
-import me.modul153.NotenVerwaltung.services.Counter;
-import net.myplayplanet.services.connection.ConnectionManager;
+import me.modul153.NotenVerwaltung.data.model.Adress;
+import me.modul153.NotenVerwaltung.services.SqlSetup;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +12,7 @@ import java.sql.SQLException;
 
 public class AdressManager extends AbstractManager<AbstractAdress, Adress, AdressComplex> {
     private static AdressManager adressManager = null;
+
     public static AdressManager getInstance() {
         if (adressManager == null) {
             adressManager = new AdressManager();
@@ -23,9 +23,7 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
     @Override
     public Adress loadIDataObjectComplex(Integer key) {
         try {
-            Counter.connectionCounter++;
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `street`,`number`,`city_id` from `notenverwaltung`.`adress` where `adress_id` = ?");
+            PreparedStatement statement = SqlSetup.getStatement("select `street`,`number`,`city_id` from `notenverwaltung`.`adress` where `adress_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -55,25 +53,23 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
                 System.out.println("could not save object with id " + key + ", adress not found!");
                 return false;
             }
-        }else if (value instanceof AdressComplex) {
+        } else if (value instanceof AdressComplex) {
             AdressComplex adresse = (AdressComplex) value;
 
             if (adresse.getCity() == null) {
                 System.out.println("could not save object with id " + key + ", city not found!");
                 return false;
-            }else if (CityManager.getInstance().getSqlType(adresse.getCity().getCityId()) == null) {
+            } else if (CityManager.getInstance().getSqlType(adresse.getCity().getCityId()) == null) {
                 CityManager.getInstance().save(key, adresse.getCity());
             }
             ortId = adresse.getCity().getCityId();
-        }else {
+        } else {
             System.out.println("invalid object in " + getManagerName() + "-cache found.");
             return false;
         }
 
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
-                    "INSERT INTO `adress` (`adress_id`, `street`, `number`, `city_id`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `street`=?,`number`=?,`city_id`=?");
+            PreparedStatement statement = SqlSetup.getStatement("INSERT INTO `adress` (`adress_id`, `street`, `number`, `city_id`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `street`=?,`number`=?,`city_id`=?");
             statement.setInt(1, value.getAdressId());
             statement.setString(2, value.getStreet());
             statement.setInt(3, value.getNumber());
@@ -89,6 +85,7 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
             return false;
         }
     }
+
 
     @Override
     public boolean validate(AbstractAdress value) {

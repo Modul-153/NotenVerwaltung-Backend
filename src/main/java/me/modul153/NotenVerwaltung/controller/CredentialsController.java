@@ -1,7 +1,6 @@
 package me.modul153.NotenVerwaltung.controller;
 
 import me.modul153.NotenVerwaltung.data.abstracts.Credential;
-import me.modul153.NotenVerwaltung.managers.CityManager;
 import me.modul153.NotenVerwaltung.managers.CredentialManager;
 import me.modul153.NotenVerwaltung.managers.UserManager;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,7 @@ public class CredentialsController {
     public Credential get(@PathVariable Integer id) {
         Credential city = CredentialManager.getInstance().getSqlType(id);
         if (city == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "credential with id '" + id +"' not found.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "credential with id '" + id + "' not found.");
         }
         return city;
     }
@@ -34,7 +33,7 @@ public class CredentialsController {
 
     private void addCredential(Credential credential) {
         if (!UserManager.getInstance().contains(credential.getUserId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with id '" + credential.getUserId() +"' not found.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with id '" + credential.getUserId() + "' not found.");
         }
 
         CredentialManager.getInstance().add(credential.getUserId(), credential);

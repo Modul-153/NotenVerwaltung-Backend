@@ -4,8 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractExam;
 import me.modul153.NotenVerwaltung.data.complex.ExamComplex;
 import me.modul153.NotenVerwaltung.data.model.Exam;
-import me.modul153.NotenVerwaltung.services.Counter;
-import net.myplayplanet.services.connection.ConnectionManager;
+import me.modul153.NotenVerwaltung.services.SqlSetup;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +13,7 @@ import java.util.Date;
 
 public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex> {
     private static ExamManager examManager = null;
+
     public static ExamManager getInstance() {
         if (examManager == null) {
             examManager = new ExamManager();
@@ -24,15 +24,14 @@ public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex
     @Override
     public AbstractExam loadIDataObjectComplex(Integer key) {
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `mark`,`date`,`user_id` from `exams` where exam_id=?");
+            PreparedStatement statement = SqlSetup.getStatement("select `mark`,`date`,`user_id` from `exams` where exam_id=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return new Exam(key,set.getInt("mark"),
+                return new Exam(key, set.getInt("mark"),
                         new Date(set.getDate("date").getTime()),
-                                set.getInt("user_id"));
-            }else {
+                        set.getInt("user_id"));
+            } else {
                 return null;
             }
         } catch (SQLException e) {
@@ -70,8 +69,7 @@ public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex
         }
 
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            PreparedStatement statement = SqlSetup.getStatement(
                     "INSERT INTO `exams` (`exam_id`, `mark`, `date`, `user_id`) VALUES (?, ?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE `mark`=?, `date`=?,`user_id`=?");
             statement.setInt(1, key);

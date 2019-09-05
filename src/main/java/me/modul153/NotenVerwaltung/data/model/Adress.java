@@ -4,8 +4,8 @@ import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdress;
-import me.modul153.NotenVerwaltung.managers.CityManager;
 import me.modul153.NotenVerwaltung.data.complex.AdressComplex;
+import me.modul153.NotenVerwaltung.managers.CityManager;
 
 @Data
 public class Adress extends AbstractAdress implements ISqlType {

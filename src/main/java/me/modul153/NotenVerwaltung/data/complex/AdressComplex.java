@@ -20,6 +20,7 @@ public class AdressComplex extends AbstractAdress implements IComplexType {
     public Adress toSqlType() {
         return new Adress(getAdressId(), getStreet(), getNumber(), city.getCityId());
     }
+
     @Override
     public AbstractionType getType() {
         return AbstractionType.COMPLEX_TYPE;

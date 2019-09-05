@@ -24,12 +24,13 @@ public class StudentController {
 
         if (student.getType() == AbstractionType.SQL_TYPE) {
             return (Student) student;
-        }else if(student.getType() == AbstractionType.COMPLEX_TYPE) {
+        } else if (student.getType() == AbstractionType.COMPLEX_TYPE) {
             return ((StudentComplex) student).toSqlType();
-        }else {
+        } else {
             return null;
         }
     }
+
     @GetMapping("/getComplex/{id}")
     public StudentComplex getStudentComplex(@PathVariable Integer id) {
         AbstractStudent student = StudentManager.getInstance().get(id);
@@ -40,9 +41,9 @@ public class StudentController {
 
         if (student.getType() == AbstractionType.SQL_TYPE) {
             return ((Student) student).toComplexType();
-        }else if(student.getType() == AbstractionType.COMPLEX_TYPE) {
+        } else if (student.getType() == AbstractionType.COMPLEX_TYPE) {
             return (StudentComplex) student;
-        }else {
+        } else {
             return null;
         }
     }

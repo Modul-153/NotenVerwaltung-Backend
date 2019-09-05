@@ -3,7 +3,6 @@ package me.modul153.NotenVerwaltung.data.complex;
 import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.IComplexType;
-import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractClass;
 import me.modul153.NotenVerwaltung.data.model.Class;
 import me.modul153.NotenVerwaltung.data.model.School;

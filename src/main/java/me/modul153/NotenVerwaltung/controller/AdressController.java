@@ -2,11 +2,10 @@ package me.modul153.NotenVerwaltung.controller;
 
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.IComplexType;
-import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdress;
+import me.modul153.NotenVerwaltung.data.complex.AdressComplex;
 import me.modul153.NotenVerwaltung.data.model.Adress;
 import me.modul153.NotenVerwaltung.managers.AdressManager;
-import me.modul153.NotenVerwaltung.data.complex.AdressComplex;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,9 +23,9 @@ public class AdressController {
 
         if (adress.getType() == AbstractionType.SQL_TYPE) {
             return (Adress) adress;
-        }else if(adress.getType() == AbstractionType.COMPLEX_TYPE) {
+        } else if (adress.getType() == AbstractionType.COMPLEX_TYPE) {
             return ((AdressComplex) adress).toSqlType();
-        }else {
+        } else {
             return null;
         }
     }
@@ -41,9 +40,9 @@ public class AdressController {
 
         if (adress.getType() == AbstractionType.SQL_TYPE) {
             return ((Adress) adress).toComplexType();
-        }else if(adress.getType() == AbstractionType.COMPLEX_TYPE) {
+        } else if (adress.getType() == AbstractionType.COMPLEX_TYPE) {
             return (AdressComplex) adress;
-        }else {
+        } else {
             return null;
         }
     }

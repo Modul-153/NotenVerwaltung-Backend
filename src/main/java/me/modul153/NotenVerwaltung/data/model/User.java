@@ -21,6 +21,7 @@ public class User extends AbstractUser implements ISqlType {
         return new UserComplex(getUserId(), getFirstname(), getLastname(), getUsername(),
                 AdressManager.getInstance().getComplexType(getAdressId()));
     }
+
     @Override
     public AbstractionType getType() {
         return AbstractionType.SQL_TYPE;

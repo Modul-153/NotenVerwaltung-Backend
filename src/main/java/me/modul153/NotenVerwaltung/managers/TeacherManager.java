@@ -3,14 +3,10 @@ package me.modul153.NotenVerwaltung.managers;
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.api.IComplexType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractStudent;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
-import me.modul153.NotenVerwaltung.data.complex.StudentComplex;
 import me.modul153.NotenVerwaltung.data.complex.TeacherComplex;
-import me.modul153.NotenVerwaltung.data.model.Student;
 import me.modul153.NotenVerwaltung.data.model.Teacher;
-import me.modul153.NotenVerwaltung.services.Counter;
-import net.myplayplanet.services.connection.ConnectionManager;
+import me.modul153.NotenVerwaltung.services.SqlSetup;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,22 +14,23 @@ import java.sql.SQLException;
 
 public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, TeacherComplex> {
     private static TeacherManager teacherManager = null;
+
     public static TeacherManager getInstance() {
         if (teacherManager == null) {
             teacherManager = new TeacherManager();
         }
         return teacherManager;
     }
+
     @Override
     public AbstractTeacher loadIDataObjectComplex(Integer key) {
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `user_id` from `teacher` where `teacher_id`=?");
+            PreparedStatement statement = SqlSetup.getStatement("select `user_id` from `teacher` where `teacher_id`=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
                 return new Teacher(key, set.getInt("user_id"));
-            }else {
+            } else {
                 return null;
             }
         } catch (SQLException e) {
@@ -72,8 +69,7 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
             }
 
             try {
-                Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+                PreparedStatement statement = SqlSetup.getStatement(
                         "INSERT INTO `teacher` (`teacher_id`, `user_id`) VALUES (?, ?) " +
                                 "ON DUPLICATE KEY UPDATE `user_id`=?");
                 statement.setInt(1, value.getTeacherId());
@@ -92,14 +88,14 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
     @Override
     public boolean validate(AbstractTeacher value) {
         if (value instanceof ISqlType) {
-            return UserManager.getInstance().contains(((Teacher)value).getUserId());
-        }else if (value instanceof IComplexType) {
+            return UserManager.getInstance().contains(((Teacher) value).getUserId());
+        } else if (value instanceof IComplexType) {
             TeacherComplex complex = (TeacherComplex) value;
             if (complex.getUser() == null) {
                 return false;
             }
             return UserManager.getInstance().validate(complex.getUser());
-        }else {
+        } else {
             return false;
         }
     }

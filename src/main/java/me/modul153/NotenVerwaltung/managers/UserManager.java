@@ -4,9 +4,8 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
 import me.modul153.NotenVerwaltung.data.complex.UserComplex;
 import me.modul153.NotenVerwaltung.data.model.User;
-import me.modul153.NotenVerwaltung.services.Counter;
+import me.modul153.NotenVerwaltung.services.SqlSetup;
 import net.myplayplanet.services.cache.Cache;
-import net.myplayplanet.services.connection.ConnectionManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,14 +15,6 @@ import java.util.ArrayList;
 public class UserManager extends AbstractManager<AbstractUser, User, UserComplex> {
 
     private static UserManager userManager = null;
-
-    public static UserManager getInstance() {
-        if (userManager == null) {
-            userManager = new UserManager();
-        }
-        return userManager;
-    }
-
     private Cache<Integer, ArrayList<Integer>> listCache;
 
     public UserManager() {
@@ -32,8 +23,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             ArrayList<Integer> result = new ArrayList<>();
 
             try {
-                Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `user_id` from `notenverwaltung`.`user`");
+                PreparedStatement statement = SqlSetup.getStatement("select `user_id` from `notenverwaltung`.`user`");
                 ResultSet set = statement.executeQuery();
 
                 while (set.next()) {
@@ -45,6 +35,13 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                 return null;
             }
         });
+    }
+
+    public static UserManager getInstance() {
+        if (userManager == null) {
+            userManager = new UserManager();
+        }
+        return userManager;
     }
 
     @Override
@@ -66,8 +63,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
     @Override
     public User loadIDataObjectComplex(Integer key) {
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `firstname`,`lastname`,`username`,`adress_id` from `notenverwaltung`.`user` where `user_id` = ?");
+            PreparedStatement statement = SqlSetup.getStatement("select `firstname`,`lastname`,`username`,`adress_id` from `notenverwaltung`.`user` where `user_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -115,8 +111,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
         }
 
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            PreparedStatement statement = SqlSetup.getStatement(
                     "INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `username`, `adress_id`) VALUES (?, ?, ?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE `firstname`=?,`lastname`=?,`username`=?,`adress_id`=?");
             statement.setInt(1, value.getUserId());

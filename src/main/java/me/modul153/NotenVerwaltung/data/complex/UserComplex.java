@@ -19,6 +19,7 @@ public class UserComplex extends AbstractUser implements IComplexType {
     public User toSqlType() {
         return new User(getUserId(), getFirstname(), getLastname(), getUsername(), adresse.getAdressId());
     }
+
     @Override
     public AbstractionType getType() {
         return AbstractionType.COMPLEX_TYPE;

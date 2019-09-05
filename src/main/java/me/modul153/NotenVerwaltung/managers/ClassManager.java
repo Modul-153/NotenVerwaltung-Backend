@@ -4,8 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractClass;
 import me.modul153.NotenVerwaltung.data.complex.ClassComplex;
 import me.modul153.NotenVerwaltung.data.model.Class;
-import me.modul153.NotenVerwaltung.services.Counter;
-import net.myplayplanet.services.connection.ConnectionManager;
+import me.modul153.NotenVerwaltung.services.SqlSetup;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +12,7 @@ import java.sql.SQLException;
 
 public class ClassManager extends AbstractManager<AbstractClass, Class, ClassComplex> {
     private static ClassManager clsManager = null;
+
     public static ClassManager getInstance() {
         if (clsManager == null) {
             clsManager = new ClassManager();
@@ -23,8 +23,7 @@ public class ClassManager extends AbstractManager<AbstractClass, Class, ClassCom
     @Override
     public Class loadIDataObjectComplex(Integer key) {
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `name`,`school_id` from `notenverwaltung`.`class` where `class_id` = ?");
+            PreparedStatement statement = SqlSetup.getStatement("select `name`,`school_id` from `notenverwaltung`.`class` where `class_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -53,24 +52,23 @@ public class ClassManager extends AbstractManager<AbstractClass, Class, ClassCom
                 System.out.println("could not save object with id " + key + ", class not found!");
                 return false;
             }
-        }else if (value instanceof ClassComplex) {
+        } else if (value instanceof ClassComplex) {
             ClassComplex clse = (ClassComplex) value;
 
             if (clse.getSchool() == null) {
                 System.out.println("could not save object with id " + key + ", School not found!");
                 return false;
-            }else if (CityManager.getInstance().getSqlType(clse.getSchool().getAdressId()) == null) {
+            } else if (CityManager.getInstance().getSqlType(clse.getSchool().getAdressId()) == null) {
                 SchoolManager.getInstance().save(key, clse.getSchool());
             }
             schoolId = clse.getSchool().getSchoolId();
-        }else {
+        } else {
             System.out.println("invalid object in " + getManagerName() + "-cache found.");
             return false;
         }
 
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            PreparedStatement statement = SqlSetup.getStatement(
                     "INSERT INTO `class` (`class_id`, `name`, `school_id`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `name`=?,`school_id`=?");
             statement.setInt(1, value.getClassId());
             statement.setString(2, value.getName());

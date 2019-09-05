@@ -2,12 +2,8 @@ package me.modul153.NotenVerwaltung.controller;
 
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
 import me.modul153.NotenVerwaltung.data.complex.TeacherComplex;
 import me.modul153.NotenVerwaltung.data.model.Teacher;
-import me.modul153.NotenVerwaltung.data.model.Teacher;
-import me.modul153.NotenVerwaltung.data.complex.TeacherComplex;
-import me.modul153.NotenVerwaltung.managers.TeacherManager;
 import me.modul153.NotenVerwaltung.managers.TeacherManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +24,13 @@ public class TeacherController {
 
         if (teacher.getType() == AbstractionType.SQL_TYPE) {
             return (Teacher) teacher;
-        }else if(teacher.getType() == AbstractionType.COMPLEX_TYPE) {
+        } else if (teacher.getType() == AbstractionType.COMPLEX_TYPE) {
             return ((TeacherComplex) teacher).toSqlType();
-        }else {
+        } else {
             return null;
         }
     }
+
     @GetMapping("/getComplex/{id}")
     public TeacherComplex getTeacherComplex(@PathVariable Integer id) {
         AbstractTeacher teacher = TeacherManager.getInstance().get(id);
@@ -44,9 +41,9 @@ public class TeacherController {
 
         if (teacher.getType() == AbstractionType.SQL_TYPE) {
             return ((Teacher) teacher).toComplexType();
-        }else if(teacher.getType() == AbstractionType.COMPLEX_TYPE) {
+        } else if (teacher.getType() == AbstractionType.COMPLEX_TYPE) {
             return (TeacherComplex) teacher;
-        }else {
+        } else {
             return null;
         }
     }

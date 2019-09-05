@@ -13,7 +13,7 @@ public class CityController {
     public City get(@PathVariable Integer id) {
         City city = CityManager.getInstance().getSqlType(id);
         if (city == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City with id '" + id +"' not found.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City with id '" + id + "' not found.");
         }
         return city;
     }

@@ -18,25 +18,25 @@ import java.io.File;
 @SpringBootApplication
 public class NotenVerwaltungApplication {
 
-	public NotenVerwaltungApplication() {
-		File configPath = new File("C:\\temp\\nv-backend");
-		LoggerService.setDefaultSink(new MockSink());
-		ServiceCluster.addServices(true, new LoggerService());
-		ServiceCluster.addServices(true, new ConfigService(configPath));
-		ServiceCluster.addServices(true, new ConnectionService());
-		ServiceCluster.addServices(true, new ScheduleService());
+    public NotenVerwaltungApplication() {
+        File configPath = new File("C:\\temp\\nv-backend");
+        LoggerService.setDefaultSink(new MockSink());
+        ServiceCluster.addServices(true, new LoggerService());
+        ServiceCluster.addServices(true, new ConfigService(configPath));
+        ServiceCluster.addServices(true, new ConnectionService());
+        ServiceCluster.addServices(true, new ScheduleService());
 
-		new SqlSetup().setup();
-	}
+        new SqlSetup().setup();
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(NotenVerwaltungApplication.class, args);
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			ServiceCluster.shutdownCluster();
-			UserManager.getInstance().clearCache();
-			CityManager.getInstance().clearCache();
-			AdressManager.getInstance().clearCache();
-		}));
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(NotenVerwaltungApplication.class, args);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            ServiceCluster.shutdownCluster();
+            UserManager.getInstance().clearCache();
+            CityManager.getInstance().clearCache();
+            AdressManager.getInstance().clearCache();
+        }));
+    }
 
 }

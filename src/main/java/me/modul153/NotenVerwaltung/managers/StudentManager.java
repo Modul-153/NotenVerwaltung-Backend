@@ -6,8 +6,7 @@ import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractStudent;
 import me.modul153.NotenVerwaltung.data.complex.StudentComplex;
 import me.modul153.NotenVerwaltung.data.model.Student;
-import me.modul153.NotenVerwaltung.services.Counter;
-import net.myplayplanet.services.connection.ConnectionManager;
+import me.modul153.NotenVerwaltung.services.SqlSetup;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +14,7 @@ import java.sql.SQLException;
 
 public class StudentManager extends AbstractManager<AbstractStudent, Student, StudentComplex> {
     private static StudentManager studentManager = null;
+
     public static StudentManager getInstance() {
         if (studentManager == null) {
             studentManager = new StudentManager();
@@ -25,13 +25,12 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
     @Override
     public AbstractStudent loadIDataObjectComplex(Integer key) {
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `user_id` from `student` where `student_id`=?");
+            PreparedStatement statement = SqlSetup.getStatement("select `user_id` from `student` where `student_id`=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
                 return new Student(key, set.getInt("user_id"));
-            }else {
+            } else {
                 return null;
             }
         } catch (SQLException e) {
@@ -41,7 +40,7 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
     }
 
     @Override
-    public boolean saveIDataObjectComplex(Integer key, AbstractStudent value){
+    public boolean saveIDataObjectComplex(Integer key, AbstractStudent value) {
         int userId;
 
         if (value instanceof Student) {
@@ -69,8 +68,7 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
         }
 
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            PreparedStatement statement = SqlSetup.getStatement(
                     "INSERT INTO `student` (`student_id`, `user_id`) VALUES (?, ?) " +
                             "ON DUPLICATE KEY UPDATE `user_id`=?");
             statement.setInt(1, value.getStudentId());
@@ -87,14 +85,14 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
     @Override
     public boolean validate(AbstractStudent value) {
         if (value instanceof ISqlType) {
-            return UserManager.getInstance().contains(((Student)value).getUserId());
-        }else if (value instanceof IComplexType) {
+            return UserManager.getInstance().contains(((Student) value).getUserId());
+        } else if (value instanceof IComplexType) {
             StudentComplex complex = (StudentComplex) value;
             if (complex.getUser() == null) {
                 return false;
             }
             return UserManager.getInstance().validate(complex.getUser());
-        }else {
+        } else {
             return false;
         }
     }

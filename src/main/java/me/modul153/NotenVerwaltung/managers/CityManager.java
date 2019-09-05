@@ -2,8 +2,7 @@ package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.City;
-import me.modul153.NotenVerwaltung.services.Counter;
-import net.myplayplanet.services.connection.ConnectionManager;
+import me.modul153.NotenVerwaltung.services.SqlSetup;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +10,7 @@ import java.sql.SQLException;
 
 public class CityManager extends AbstractManager<City, City, City> {
     private static CityManager cityManager = null;
+
     public static CityManager getInstance() {
         if (cityManager == null) {
             cityManager = new CityManager();
@@ -21,8 +21,7 @@ public class CityManager extends AbstractManager<City, City, City> {
     @Override
     public City loadIDataObjectComplex(Integer key) {
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement("select `zipcode`,`name` from `notenverwaltung`.`city` where `city_id` = ?");
+            PreparedStatement statement = SqlSetup.getStatement("select `zipcode`,`name` from `notenverwaltung`.`city` where `city_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -39,8 +38,7 @@ public class CityManager extends AbstractManager<City, City, City> {
     @Override
     public boolean saveIDataObjectComplex(Integer key, City value) {
         try {
-            Counter.connectionCounter++;
-        PreparedStatement statement = ConnectionManager.getInstance().getMySQLConnection().prepareStatement(
+            PreparedStatement statement = SqlSetup.getStatement(
                     "INSERT INTO `city` (`city_id`, `zipcode`, `name`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `zipcode`=?,`name`=?");
             statement.setInt(1, value.getCityId());
             statement.setInt(2, value.getZipCode());
@@ -54,7 +52,6 @@ public class CityManager extends AbstractManager<City, City, City> {
             return false;
         }
     }
-
 
 
     @Override

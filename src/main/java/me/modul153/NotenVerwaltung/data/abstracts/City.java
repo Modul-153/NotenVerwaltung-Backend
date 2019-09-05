@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.IAbstract;
-import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.api.IComplexType;
+import me.modul153.NotenVerwaltung.api.ISqlType;
 
 @AllArgsConstructor
 @Data
