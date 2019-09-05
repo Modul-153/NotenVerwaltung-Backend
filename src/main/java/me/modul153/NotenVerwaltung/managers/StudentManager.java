@@ -4,11 +4,9 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.api.IComplexType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractStudent;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
 import me.modul153.NotenVerwaltung.data.complex.StudentComplex;
 import me.modul153.NotenVerwaltung.data.model.Student;
-import me.modul153.NotenVerwaltung.data.model.Teacher;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
+import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +26,7 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
     @Override
     public AbstractStudent loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `user_id` from `student` where `student_id`=?");
+            PreparedStatement statement = SqlHelper.getStatement("select `user_id` from `student` where `student_id`=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
@@ -47,7 +45,7 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
     public HashMap<Integer, AbstractStudent> loadAllObjects() {
         HashMap<Integer, AbstractStudent> map = new HashMap<>();
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `student_id`,`user_id` from `student`");
+            PreparedStatement statement = SqlHelper.getStatement("select `student_id`,`user_id` from `student`");
             ResultSet set = statement.executeQuery();
 
             while (set.next()) {
@@ -90,7 +88,7 @@ public class StudentManager extends AbstractManager<AbstractStudent, Student, St
         }
 
         try {
-            PreparedStatement statement = SqlSetup.getStatement(
+            PreparedStatement statement = SqlHelper.getStatement(
                     "INSERT INTO `student` (`student_id`, `user_id`) VALUES (?, ?) " +
                             "ON DUPLICATE KEY UPDATE `user_id`=?");
             statement.setInt(1, value.getStudentId());

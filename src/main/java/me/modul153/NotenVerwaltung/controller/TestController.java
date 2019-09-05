@@ -1,6 +1,6 @@
 package me.modul153.NotenVerwaltung.controller;
 
-import me.modul153.NotenVerwaltung.services.Counter;
+import me.modul153.NotenVerwaltung.helper.Counter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

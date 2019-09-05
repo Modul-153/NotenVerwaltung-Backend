@@ -3,7 +3,7 @@ package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.Credential;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
+import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +24,7 @@ public class CredentialManager extends AbstractManager<Credential, Credential, C
     public HashMap<Integer, Credential> loadAllObjects() {
         HashMap<Integer, Credential> map = new HashMap<>();
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `user_id`,`password` from usercredentials");
+            PreparedStatement statement = SqlHelper.getStatement("select `user_id`,`password` from usercredentials");
             ResultSet set = statement.executeQuery();
 
             while (set.next()) {
@@ -42,7 +42,7 @@ public class CredentialManager extends AbstractManager<Credential, Credential, C
     @Override
     public Credential loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `password` from usercredentials where user_id=?");
+            PreparedStatement statement = SqlHelper.getStatement("select `password` from usercredentials where user_id=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
@@ -59,7 +59,7 @@ public class CredentialManager extends AbstractManager<Credential, Credential, C
     @Override
     public boolean saveIDataObjectComplex(Integer key, Credential value) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement(
+            PreparedStatement statement = SqlHelper.getStatement(
                     "insert into `usercredentials` (`user_id`, `password`) values (? ,?)  ON DUPLICATE KEY UPDATE `password`=?");
             statement.setInt(1, value.getUserId());
             statement.setString(2, value.getPassword());

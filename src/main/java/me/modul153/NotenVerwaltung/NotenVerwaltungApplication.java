@@ -1,8 +1,6 @@
 package me.modul153.NotenVerwaltung;
 
-import me.modul153.NotenVerwaltung.data.model.School;
 import me.modul153.NotenVerwaltung.managers.*;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
 import net.myplayplanet.services.ServiceCluster;
 import net.myplayplanet.services.config.ConfigService;
 import net.myplayplanet.services.connection.ConnectionService;
@@ -25,8 +23,6 @@ public class NotenVerwaltungApplication {
         ServiceCluster.addServices(true, new ConnectionService());
         ServiceCluster.addServices(true, new ScheduleService());
 
-
-
         //the order is important because of dependency between the objects
         CityManager.getInstance();
         AdressManager.getInstance();
@@ -39,9 +35,6 @@ public class NotenVerwaltungApplication {
 
         ExamManager.getInstance();
         //end
-
-
-        new SqlSetup().setup();
     }
 
     public static void main(String[] args) {

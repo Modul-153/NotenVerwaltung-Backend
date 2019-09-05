@@ -4,7 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractAdress;
 import me.modul153.NotenVerwaltung.data.complex.AdressComplex;
 import me.modul153.NotenVerwaltung.data.model.Adress;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
+import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +25,7 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
     public HashMap<Integer, AbstractAdress> loadAllObjects() {
         HashMap<Integer, AbstractAdress> map = new HashMap<>();
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `adress_id`,`street`,`number`,`city_id` from `notenverwaltung`.`adress`");
+            PreparedStatement statement = SqlHelper.getStatement("select `adress_id`,`street`,`number`,`city_id` from `notenverwaltung`.`adress`");
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 int key = set.getInt("adress_id");
@@ -46,7 +46,7 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
     @Override
     public Adress loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `street`,`number`,`city_id` from `notenverwaltung`.`adress` where `adress_id` = ?");
+            PreparedStatement statement = SqlHelper.getStatement("select `street`,`number`,`city_id` from `notenverwaltung`.`adress` where `adress_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -92,7 +92,7 @@ public class AdressManager extends AbstractManager<AbstractAdress, Adress, Adres
         }
 
         try {
-            PreparedStatement statement = SqlSetup.getStatement("INSERT INTO `adress` (`adress_id`, `street`, `number`, `city_id`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `street`=?,`number`=?,`city_id`=?");
+            PreparedStatement statement = SqlHelper.getStatement("INSERT INTO `adress` (`adress_id`, `street`, `number`, `city_id`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `street`=?,`number`=?,`city_id`=?");
             statement.setInt(1, value.getAdressId());
             statement.setString(2, value.getStreet());
             statement.setInt(3, value.getNumber());

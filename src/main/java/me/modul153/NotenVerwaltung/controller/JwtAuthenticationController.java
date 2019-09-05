@@ -2,7 +2,7 @@ package me.modul153.NotenVerwaltung.controller;
 
 import me.modul153.NotenVerwaltung.data.dao.CredentialsDao;
 import me.modul153.NotenVerwaltung.data.dao.TokenDao;
-import me.modul153.NotenVerwaltung.jwt.JwtTokenUtil;
+import me.modul153.NotenVerwaltung.helper.JwtTokenUtil;
 import me.modul153.NotenVerwaltung.services.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

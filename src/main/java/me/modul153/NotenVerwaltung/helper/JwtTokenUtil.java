@@ -1,4 +1,4 @@
-package me.modul153.NotenVerwaltung.jwt;
+package me.modul153.NotenVerwaltung.helper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -4,10 +4,9 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.api.IComplexType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
 import me.modul153.NotenVerwaltung.data.complex.TeacherComplex;
 import me.modul153.NotenVerwaltung.data.model.Teacher;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
+import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +27,7 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
     public HashMap<Integer, AbstractTeacher> loadAllObjects() {
         HashMap<Integer, AbstractTeacher> map = new HashMap<>();
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `teacher_id`,`user_id` from `teacher`");
+            PreparedStatement statement = SqlHelper.getStatement("select `teacher_id`,`user_id` from `teacher`");
             ResultSet set = statement.executeQuery();
 
             while (set.next()) {
@@ -45,7 +44,7 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
     @Override
     public AbstractTeacher loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `user_id` from `teacher` where `teacher_id`=?");
+            PreparedStatement statement = SqlHelper.getStatement("select `user_id` from `teacher` where `teacher_id`=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
@@ -89,7 +88,7 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
             }
 
             try {
-                PreparedStatement statement = SqlSetup.getStatement(
+                PreparedStatement statement = SqlHelper.getStatement(
                         "INSERT INTO `teacher` (`teacher_id`, `user_id`) VALUES (?, ?) " +
                                 "ON DUPLICATE KEY UPDATE `user_id`=?");
                 statement.setInt(1, value.getTeacherId());

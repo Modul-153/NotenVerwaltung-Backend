@@ -4,7 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractExam;
 import me.modul153.NotenVerwaltung.data.complex.ExamComplex;
 import me.modul153.NotenVerwaltung.data.model.Exam;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
+import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +26,7 @@ public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex
     public HashMap<Integer, AbstractExam> loadAllObjects() {
         HashMap<Integer, AbstractExam> map = new HashMap<>();
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `exam_id`,`mark`,`date`,`user_id` from `exams`");
+            PreparedStatement statement = SqlHelper.getStatement("select `exam_id`,`mark`,`date`,`user_id` from `exams`");
             ResultSet set = statement.executeQuery();
 
             while (set.next()) {
@@ -45,7 +45,7 @@ public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex
     @Override
     public AbstractExam loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `mark`,`date`,`user_id` from `exams` where exam_id=?");
+            PreparedStatement statement = SqlHelper.getStatement("select `mark`,`date`,`user_id` from `exams` where exam_id=?");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
             if (set.next()) {
@@ -90,7 +90,7 @@ public class ExamManager extends AbstractManager<AbstractExam, Exam, ExamComplex
         }
 
         try {
-            PreparedStatement statement = SqlSetup.getStatement(
+            PreparedStatement statement = SqlHelper.getStatement(
                     "INSERT INTO `exams` (`exam_id`, `mark`, `date`, `user_id`) VALUES (?, ?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE `mark`=?, `date`=?,`user_id`=?");
             statement.setInt(1, key);

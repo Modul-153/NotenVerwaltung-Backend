@@ -4,7 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
 import me.modul153.NotenVerwaltung.data.complex.UserComplex;
 import me.modul153.NotenVerwaltung.data.model.User;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
+import me.modul153.NotenVerwaltung.helper.SqlHelper;
 import net.myplayplanet.services.cache.Cache;
 
 import java.sql.PreparedStatement;
@@ -24,7 +24,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             ArrayList<Integer> result = new ArrayList<>();
 
             try {
-                PreparedStatement statement = SqlSetup.getStatement("select `user_id` from `notenverwaltung`.`user`");
+                PreparedStatement statement = SqlHelper.getStatement("select `user_id` from `notenverwaltung`.`user`");
                 ResultSet set = statement.executeQuery();
 
                 while (set.next()) {
@@ -42,7 +42,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
     public HashMap<Integer, AbstractUser> loadAllObjects() {
         HashMap<Integer, AbstractUser> map = new HashMap<>();
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `user_id`,`firstname`,`lastname`,`username`,`adress_id` from `notenverwaltung`.`user`");
+            PreparedStatement statement = SqlHelper.getStatement("select `user_id`,`firstname`,`lastname`,`username`,`adress_id` from `notenverwaltung`.`user`");
             ResultSet r = statement.executeQuery();
 
             while (r.next()) {
@@ -87,7 +87,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
     @Override
     public User loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `firstname`,`lastname`,`username`,`adress_id` from `notenverwaltung`.`user` where `user_id` = ?");
+            PreparedStatement statement = SqlHelper.getStatement("select `firstname`,`lastname`,`username`,`adress_id` from `notenverwaltung`.`user` where `user_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -135,7 +135,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
         }
 
         try {
-            PreparedStatement statement = SqlSetup.getStatement(
+            PreparedStatement statement = SqlHelper.getStatement(
                     "INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `username`, `adress_id`) VALUES (?, ?, ?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE `firstname`=?,`lastname`=?,`username`=?,`adress_id`=?");
             statement.setInt(1, value.getUserId());

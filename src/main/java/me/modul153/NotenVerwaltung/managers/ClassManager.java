@@ -4,7 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractClass;
 import me.modul153.NotenVerwaltung.data.complex.ClassComplex;
 import me.modul153.NotenVerwaltung.data.model.Class;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
+import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +25,7 @@ public class ClassManager extends AbstractManager<AbstractClass, Class, ClassCom
     public HashMap<Integer, AbstractClass> loadAllObjects() {
         HashMap<Integer, AbstractClass> map = new HashMap<>();
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `class_id`,`name`,`school_id` from `notenverwaltung`.`class`");
+            PreparedStatement statement = SqlHelper.getStatement("select `class_id`,`name`,`school_id` from `notenverwaltung`.`class`");
 
             ResultSet set = statement.executeQuery();
             while (set.next()) {
@@ -45,7 +45,7 @@ public class ClassManager extends AbstractManager<AbstractClass, Class, ClassCom
     @Override
     public Class loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `name`,`school_id` from `notenverwaltung`.`class` where `class_id` = ?");
+            PreparedStatement statement = SqlHelper.getStatement("select `name`,`school_id` from `notenverwaltung`.`class` where `class_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -90,7 +90,7 @@ public class ClassManager extends AbstractManager<AbstractClass, Class, ClassCom
         }
 
         try {
-            PreparedStatement statement = SqlSetup.getStatement(
+            PreparedStatement statement = SqlHelper.getStatement(
                     "INSERT INTO `class` (`class_id`, `name`, `school_id`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `name`=?,`school_id`=?");
             statement.setInt(1, value.getClassId());
             statement.setString(2, value.getName());

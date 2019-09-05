@@ -2,7 +2,7 @@ package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.City;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
+import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,7 +23,7 @@ public class CityManager extends AbstractManager<City, City, City> {
     public HashMap<Integer, City> loadAllObjects() {
         HashMap<Integer, City> map = new HashMap<>();
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `city_id`,`zipcode`,`name` from `notenverwaltung`.`city`");
+            PreparedStatement statement = SqlHelper.getStatement("select `city_id`,`zipcode`,`name` from `notenverwaltung`.`city`");
 
             ResultSet set = statement.executeQuery();
 
@@ -41,7 +41,7 @@ public class CityManager extends AbstractManager<City, City, City> {
     @Override
     public City loadIDataObjectComplex(Integer key) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement("select `zipcode`,`name` from `notenverwaltung`.`city` where `city_id` = ?");
+            PreparedStatement statement = SqlHelper.getStatement("select `zipcode`,`name` from `notenverwaltung`.`city` where `city_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -58,7 +58,7 @@ public class CityManager extends AbstractManager<City, City, City> {
     @Override
     public boolean saveIDataObjectComplex(Integer key, City value) {
         try {
-            PreparedStatement statement = SqlSetup.getStatement(
+            PreparedStatement statement = SqlHelper.getStatement(
                     "INSERT INTO `city` (`city_id`, `zipcode`, `name`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `zipcode`=?,`name`=?");
             statement.setInt(1, value.getCityId());
             statement.setInt(2, value.getZipCode());

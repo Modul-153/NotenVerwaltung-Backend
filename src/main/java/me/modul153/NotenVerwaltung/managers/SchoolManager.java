@@ -4,10 +4,9 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.api.IComplexType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractSchool;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractStudent;
 import me.modul153.NotenVerwaltung.data.complex.SchoolComplex;
 import me.modul153.NotenVerwaltung.data.model.School;
-import me.modul153.NotenVerwaltung.services.SqlSetup;
+import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +29,7 @@ public class SchoolManager extends AbstractManager<AbstractSchool, School, Schoo
 
         PreparedStatement statement = null;
         try {
-            statement = SqlSetup.getStatement("select `school_id`,`schoolname`,`adress_id` from `school`");
+            statement = SqlHelper.getStatement("select `school_id`,`schoolname`,`adress_id` from `school`");
 
             ResultSet set = statement.executeQuery();
 
@@ -49,7 +48,7 @@ public class SchoolManager extends AbstractManager<AbstractSchool, School, Schoo
     public AbstractSchool loadIDataObjectComplex(Integer key) {
         PreparedStatement statement = null;
         try {
-            statement = SqlSetup.getStatement("select `schoolname`,`adress_id` from `school` where `school_id`=?");
+            statement = SqlHelper.getStatement("select `schoolname`,`adress_id` from `school` where `school_id`=?");
             statement.setInt(1, key);
 
             ResultSet set = statement.executeQuery();
@@ -93,7 +92,7 @@ public class SchoolManager extends AbstractManager<AbstractSchool, School, Schoo
         }
 
         try {
-            PreparedStatement statement = SqlSetup.getStatement(
+            PreparedStatement statement = SqlHelper.getStatement(
                     "INSERT INTO `school` (`school_id`, `schoolname`,`adress_id`) VALUES (?, ?, ?) " +
                             "ON DUPLICATE KEY UPDATE `schoolname`=?, `adress_id`=?");
             statement.setInt(1, key);
