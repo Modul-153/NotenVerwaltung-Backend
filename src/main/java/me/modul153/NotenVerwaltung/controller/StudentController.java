@@ -1,6 +1,8 @@
 package me.modul153.NotenVerwaltung.controller;
 
 import me.modul153.NotenVerwaltung.api.AbstractionType;
+import me.modul153.NotenVerwaltung.api.IComplexType;
+import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractStudent;
 import me.modul153.NotenVerwaltung.data.complex.StudentComplex;
 import me.modul153.NotenVerwaltung.data.model.Student;
@@ -16,7 +18,7 @@ import javax.validation.Valid;
 public class StudentController {
     @GetMapping("/get/{id}")
     public Student getStudent(@PathVariable Integer id) {
-        AbstractStudent student = StudentManager.getInstance().get(id);
+        AbstractStudent student = StudentManager.getInstance().getSimple(id);
 
         if (student == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student with id " + id + " not found.");
@@ -33,7 +35,7 @@ public class StudentController {
 
     @GetMapping("/getComplex/{id}")
     public StudentComplex getStudentComplex(@PathVariable Integer id) {
-        AbstractStudent student = StudentManager.getInstance().get(id);
+        AbstractStudent student = StudentManager.getInstance().getComplex(id);
 
         if (student == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student with id " + id + " not found.");
@@ -77,6 +79,12 @@ public class StudentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student with id " + student.getStudentId() + " not valid.");
         }
 
-        StudentManager.getInstance().add(student.getStudentId(), student);
+        if (student instanceof ISqlType) {
+            StudentManager.getInstance().updateSimple((Student) student);
+
+        }else if (student instanceof IComplexType) {
+            StudentManager.getInstance().updateSimple((StudentComplex) student);
+
+        }
     }
 }

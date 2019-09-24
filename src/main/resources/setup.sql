@@ -9,7 +9,7 @@ use notenverwaltung;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`city`
 (
-    `city_id` INT         NOT NULL AUTO_INCREMENT,
+    `city_id` SERIAL,
     `name`    VARCHAR(45) NOT NULL,
     `zipcode` INT         NOT NULL,
     PRIMARY KEY (`city_id`),
@@ -22,49 +22,30 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`city`
 -- -----------------------------------------------------
 create table if not exists `notenverwaltung`.`subject`
 (
-    `subject_id` int not null,
-    `name` varchar(50) not null,
+    `subject_id` SERIAL,
+    `name`       varchar(50) not null,
     unique index `subject_id_UNIQUE` (`subject_id` ASC)
 )
     ENGINE = InnoDB;
-
--- -----------------------------------------------------
--- Table `notenverwaltung`.`adress`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`adress`
-(
-    `adress_id` INT         NOT NULL AUTO_INCREMENT,
-    `street`    VARCHAR(45) NULL,
-    `number`    INT         NULL,
-    `city_id`   INT         NOT NULL,
-    PRIMARY KEY (`adress_id`),
-    UNIQUE INDEX `adress_id_UNIQUE` (`adress_id` ASC),
-    INDEX `city_id_idx` (`city_id` ASC),
-    CONSTRAINT `fk_city_id_adress`
-        FOREIGN KEY (`city_id`)
-            REFERENCES `notenverwaltung`.`city` (`city_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
 (
-    `user_id`   INT         NOT NULL AUTO_INCREMENT,
-    `firstname` VARCHAR(45) NOT NULL,
-    `lastname`  VARCHAR(45) NOT NULL,
-    `username`  VARCHAR(45) NOT NULL,
-    `adress_id` INT         NOT NULL,
+    `user_id`   SERIAL,
+    `firstname` VARCHAR(45)     NOT NULL,
+    `lastname`  VARCHAR(45)     NOT NULL,
+    `username`  VARCHAR(45)     NOT NULL,
+    `number`    INT             NOT NULL,
+    `street`    VARCHAR(45)     NOT NULL,
+    `city_id`   BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`user_id`),
     UNIQUE INDEX `idPersonTable_UNIQUE` (`user_id` ASC),
-    INDEX `adress_id_idx` (`adress_id` ASC),
-    CONSTRAINT `fk_adress_id_user`
-        FOREIGN KEY (`adress_id`)
-            REFERENCES `notenverwaltung`.`adress` (`adress_id`)
+    INDEX `adress_id_idx` (`city_id` ASC),
+    CONSTRAINT `fk_city_id_user`
+        FOREIGN KEY (`city_id`)
+            REFERENCES `notenverwaltung`.`city` (`city_id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 )
@@ -76,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user_credential`
 (
-    `user_id`  INT           NOT NULL,
+    `user_id`  SERIAL,
     `password` VARCHAR(1000) NOT NULL,
     INDEX `user_id_idx` (`user_id` ASC),
     CONSTRAINT `fk_user_id_user_credential`
@@ -93,14 +74,16 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user_credential`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`school`
 (
-    `school_id`  INT         NOT NULL,
-    `schoolname` VARCHAR(45) NULL,
-    `adress_id`  INT         NOT NULL,
+    `school_id`  SERIAL,
+    `schoolname` VARCHAR(45)     NOT NULL,
+    `number`     INT             NOT NULL,
+    `street`     VARCHAR(45)     NOT NULL,
+    `city_id`    BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`school_id`),
-    INDEX `adress_id_idx` (`adress_id` ASC),
-    CONSTRAINT `fk_adress_id_school`
-        FOREIGN KEY (`adress_id`)
-            REFERENCES `notenverwaltung`.`adress` (`adress_id`)
+    INDEX `city_id_idx` (`city_id` ASC),
+    CONSTRAINT `fk_city_id_school`
+        FOREIGN KEY (`city_id`)
+            REFERENCES `notenverwaltung`.`city` (`city_id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 )
@@ -112,9 +95,9 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`school`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class`
 (
-    `class_id`  INT         NOT NULL AUTO_INCREMENT,
-    `name`      VARCHAR(45) NOT NULL,
-    `school_id` INT         NOT NULL,
+    `class_id`  SERIAL,
+    `name`      VARCHAR(45)     NOT NULL,
+    `school_id` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`class_id`),
     INDEX `school_id_idx` (`school_id` ASC),
     CONSTRAINT `fk_school_id_class`
@@ -131,10 +114,10 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`exam`
 (
-    `exam_id` INT  NOT NULL AUTO_INCREMENT,
-    `mark`    INT  NOT NULL,
-    `date`    DATE NOT NULL,
-    `user_id` INT  NOT NULL,
+    `exam_id` SERIAL,
+    `mark`    INT             NOT NULL,
+    `date`    DATE            NOT NULL,
+    `user_id` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`exam_id`),
     UNIQUE INDEX `exam_id_UNIQUE` (`exam_id` ASC),
     INDEX `user_id_idx` (`user_id` ASC),
@@ -152,8 +135,8 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`exam`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher`
 (
-    `teacher_id` INT NOT NULL AUTO_INCREMENT,
-    `user_id`    INT NOT NULL,
+    `teacher_id` SERIAL,
+    `user_id`    BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`teacher_id`),
     UNIQUE INDEX `teacher_id_UNIQUE` (`teacher_id` ASC),
     INDEX `user_id_idx` (`user_id` ASC),
@@ -171,8 +154,8 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`student`
 (
-    `student_id` INT NOT NULL AUTO_INCREMENT,
-    `user_id`    INT NOT NULL,
+    `student_id` SERIAL,
+    `user_id`    BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`student_id`),
     UNIQUE INDEX `student_id_UNIQUE` (`student_id` ASC),
     UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC),
@@ -190,10 +173,10 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`student`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class_member`
 (
-    `student_id`  INT NOT NULL,
-    `class_id` INT NOT NULL,
-    `from` date NOT NULL,
-    `to` date NOT NULL,
+    `student_id` BIGINT UNSIGNED NOT NULL,
+    `class_id`   BIGINT UNSIGNED NOT NULL,
+    `from`       date NOT NULL,
+    `to`         date NOT NULL,
     UNIQUE INDEX `user_id_UNIQUE` (`student_id` ASC),
     INDEX `class_id_idx` (`class_id` ASC),
     CONSTRAINT `fk_teacher_id_class_member`
@@ -215,15 +198,14 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class_member`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher_class_subject`
 (
-    `tcs_id`  INT NOT NULL,
-    `teacher_id` INT NOT NULL,
-    `class_id` INT NOT NULL,
-    `subject_id` INT NOT NULL,
-    `from` date NOT NULL,
-    `to` date NOT NULL,
-    UNIQUE INDEX `tcs_id_UNIQUE` (`tcs_id` ASC),
-    PRIMARY KEY (`tcs_id`),
-    INDEX `tcs_id_idx` (`class_id` ASC),
+    `teacher_id` BIGINT UNSIGNED NOT NULL,
+    `class_id`   BIGINT UNSIGNED NOT NULL,
+    `subject_id` BIGINT UNSIGNED NOT NULL,
+    `from`       date NOT NULL,
+    `to`         date NOT NULL,
+    INDEX `tcs_class_id_idx` (`class_id` ASC),
+    INDEX `tcs_teacher_id_idx` (`teacher_id` ASC),
+    INDEX `tcs_subject_id_idx` (`subject_id` ASC),
     CONSTRAINT `fk_tcs_teacher_id`
         FOREIGN KEY (`teacher_id`)
             REFERENCES `notenverwaltung`.`teacher` (`teacher_id`)
@@ -242,21 +224,17 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher_class_subject`
 )
     ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`primary_info`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`primary_info`
 (
-    `primary_info_id`  INT NOT NULL,
-    `teacher_id` INT NOT NULL,
-    `class_id` INT NOT NULL,
-    `from` date NOT NULL,
-    `to` date NOT NULL,
-    UNIQUE INDEX `primary_info_id_UNIQUE` (`primary_info_id` ASC),
+    `teacher_id`      BIGINT UNSIGNED NOT NULL,
+    `class_id`        BIGINT UNSIGNED NOT NULL,
+    `from`            date NOT NULL,
+    `to`              date NOT NULL,
     INDEX `primary_info_teacher_id_idx` (`teacher_id` ASC),
     INDEX `primary_info_class_id_idx` (`class_id` ASC),
-    PRIMARY KEY (`primary_info_id`),
     CONSTRAINT `fk_primary_info_teacher_id`
         FOREIGN KEY (`teacher_id`)
             REFERENCES `notenverwaltung`.`teacher` (`teacher_id`)

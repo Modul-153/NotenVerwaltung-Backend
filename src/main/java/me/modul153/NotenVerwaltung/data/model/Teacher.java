@@ -5,7 +5,6 @@ import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
 import me.modul153.NotenVerwaltung.data.complex.TeacherComplex;
-import me.modul153.NotenVerwaltung.managers.UserManager;
 
 @Data
 public class Teacher extends AbstractTeacher implements ISqlType {

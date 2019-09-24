@@ -11,4 +11,6 @@ public abstract class AbstractUser implements IAbstract {
     private String firstname;
     private String lastname;
     private String username;
+    private String street;
+    private int number;
 }

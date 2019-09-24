@@ -2,13 +2,11 @@ package me.modul153.NotenVerwaltung.helper;
 
 import net.myplayplanet.services.connection.ConnectionManager;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.Connection;
 
 public class SqlHelper {
-    public static PreparedStatement getStatement(String sql) throws SQLException {
-        System.out.println("sql: " + sql);
+    public static Connection getConnection() {
         Counter.connectionCounter++;
-        return ConnectionManager.getInstance().getMySQLConnection().prepareStatement(sql);
+        return ConnectionManager.getInstance().getMySQLConnection();
     }
 }

@@ -4,6 +4,7 @@ import me.modul153.NotenVerwaltung.api.AbstractManager;
 import me.modul153.NotenVerwaltung.data.abstracts.City;
 import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,10 +21,11 @@ public class CityManager extends AbstractManager<City, City, City> {
     }
 
     @Override
-    public HashMap<Integer, City> loadAllObjects() {
+    public HashMap<Integer, City> getAllComplex() {
         HashMap<Integer, City> map = new HashMap<>();
+        Connection conn = SqlHelper.getConnection();
         try {
-            PreparedStatement statement = SqlHelper.getStatement("select `city_id`,`zipcode`,`name` from `notenverwaltung`.`city`");
+            PreparedStatement statement = conn.prepareStatement("select `city_id`,`zipcode`,`name` from `notenverwaltung`.`city`");
 
             ResultSet set = statement.executeQuery();
 
@@ -35,13 +37,25 @@ public class CityManager extends AbstractManager<City, City, City> {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
-    public City loadIDataObjectComplex(Integer key) {
+    public HashMap<Integer, City> getAllSimple() {
+        return getAllComplex();
+    }
+
+    @Override
+    public City getComplex(int key) {
+        Connection conn = SqlHelper.getConnection();
         try {
-            PreparedStatement statement = SqlHelper.getStatement("select `zipcode`,`name` from `notenverwaltung`.`city` where `city_id` = ?");
+            PreparedStatement statement = conn.prepareStatement("select `zipcode`,`name` from `notenverwaltung`.`city` where `city_id` = ?");
             statement.setInt(1, key);
             ResultSet r = statement.executeQuery();
             if (r.next()) {
@@ -52,13 +66,25 @@ public class CityManager extends AbstractManager<City, City, City> {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
-    public boolean saveIDataObjectComplex(Integer key, City value) {
+    public City getSimple(int key) {
+        return getComplex(key);
+    }
+
+    @Override
+    public boolean updateComplex(City value) {
+        Connection conn = SqlHelper.getConnection();
         try {
-            PreparedStatement statement = SqlHelper.getStatement(
+            PreparedStatement statement = conn.prepareStatement(
                     "INSERT INTO `city` (`city_id`, `zipcode`, `name`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `zipcode`=?,`name`=?");
             statement.setInt(1, value.getCityId());
             statement.setInt(2, value.getZipCode());
@@ -70,12 +96,17 @@ public class CityManager extends AbstractManager<City, City, City> {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-
     @Override
-    public String getManagerName() {
-        return "city";
+    public boolean updateSimple(City simple) {
+        return updateComplex(simple);
     }
 }

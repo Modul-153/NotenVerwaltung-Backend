@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class CityController {
     @GetMapping("/get/{id}")
     public City get(@PathVariable Integer id) {
-        City city = CityManager.getInstance().getSqlType(id);
+        City city = CityManager.getInstance().getComplex(id);
         if (city == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City with id '" + id + "' not found.");
         }
@@ -20,13 +20,13 @@ public class CityController {
 
     @PutMapping("/add/")
     public void add(@RequestBody City city) {
-        CityManager.getInstance().add(city.getCityId(), city);
+        CityManager.getInstance().updateComplex(city);
     }
 
     @PutMapping("/addMultiple/")
     public void addMultiple(@RequestBody City[] cities) {
         for (City city : cities) {
-            CityManager.getInstance().add(city.getCityId(), city);
+            CityManager.getInstance().updateComplex(city);
         }
     }
 }

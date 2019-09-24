@@ -1,40 +1,59 @@
 package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
-import me.modul153.NotenVerwaltung.api.IComplexType;
-import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
 import me.modul153.NotenVerwaltung.data.complex.TeacherComplex;
 import me.modul153.NotenVerwaltung.data.model.Teacher;
+import me.modul153.NotenVerwaltung.data.model.User;
 import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
 public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, TeacherComplex> {
-    private static TeacherManager teacherManager = null;
+    private static TeacherManager cityManager = null;
 
     public static TeacherManager getInstance() {
-        if (teacherManager == null) {
-            teacherManager = new TeacherManager();
+        if (cityManager == null) {
+            cityManager = new TeacherManager();
         }
-        return teacherManager;
+        return cityManager;
     }
 
     @Override
-    public HashMap<Integer, AbstractTeacher> loadAllObjects() {
-        HashMap<Integer, AbstractTeacher> map = new HashMap<>();
+    public HashMap<Integer, TeacherComplex> getAllComplex() {
+
+        Connection conn = SqlHelper.getConnection();
         try {
-            PreparedStatement statement = SqlHelper.getStatement("select `teacher_id`,`user_id` from `teacher`");
-            ResultSet set = statement.executeQuery();
+            HashMap<Integer, TeacherComplex> result = new HashMap<>();
+            ResultSet set = conn.prepareStatement(
+                    "select teacher_id,user_id, firstname, lastname, username, number, street, city_id " +
+                            "from teacher " +
+                            "         join user u on teacher.user_id = u.user_id " +
+                            "order by teacher_id;").executeQuery();
 
             while (set.next()) {
-                int id = set.getInt("teacher_id");
-                map.put(id, new Teacher(id, set.getInt("user_id")));
+                int teacherId = set.getInt("teacher_id");
+                result.put(teacherId,
+                        new TeacherComplex(
+                                teacherId,
+                                new User(
+                                        set.getInt("user_id"),
+                                        set.getString("firstname"),
+                                        set.getString("lastname"),
+                                        set.getString("username"),
+                                        set.getString("street"),
+                                        set.getInt("number"),
+                                        set.getInt("city_id")
+
+                                )
+                        )
+                );
             }
-            return map;
+            return result;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -42,85 +61,115 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
     }
 
     @Override
-    public AbstractTeacher loadIDataObjectComplex(Integer key) {
+    public HashMap<Integer, Teacher> getAllSimple() {
+
+        Connection conn = SqlHelper.getConnection();
         try {
-            PreparedStatement statement = SqlHelper.getStatement("select `user_id` from `teacher` where `teacher_id`=?");
+            HashMap<Integer, Teacher> result = new HashMap<>();
+            ResultSet set = conn.prepareStatement(
+                    "select teacher_id, user_id from teacher order by teacher_id;").executeQuery();
+
+            while (set.next()) {
+                int teacherId = set.getInt("teacher_id");
+                result.put(teacherId,
+                        new Teacher(
+                                teacherId,
+                                set.getInt("user_id")
+                        )
+                );
+            }
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public TeacherComplex getComplex(int key) {
+        Connection conn = SqlHelper.getConnection();
+        try {
+            PreparedStatement statement = conn.prepareStatement(
+                    "select user_id, firstname, lastname, username, number, street, city_id " +
+                            "from teacher " +
+                            "         join user u on teacher.user_id = u.user_id " +
+                            "where teacher_id = ?;");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
+
             if (set.next()) {
-                return new Teacher(key, set.getInt("user_id"));
+                return new TeacherComplex(
+                        key,
+                        new User(
+                                set.getInt("user_id"),
+                                set.getString("firstname"),
+                                set.getString("lastname"),
+                                set.getString("username"),
+                                set.getString("street"),
+                                set.getInt("number"),
+                                set.getInt("city_id")
+
+                        )
+                );
             } else {
                 return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    @Override
-    public boolean saveIDataObjectComplex(Integer key, AbstractTeacher value) {
-        {
-            int userId;
-
-            if (value instanceof Teacher) {
-                Teacher teacher = (Teacher) value;
-                userId = teacher.getUserId();
-
-                if (UserManager.getInstance().getSqlType(teacher.getUserId()) == null) {
-                    System.out.println("could not save object with id " + key + ", user not found!");
-                    return false;
-                }
-            } else if (value instanceof TeacherComplex) {
-                TeacherComplex student = (TeacherComplex) value;
-
-                if (student.getUser() == null) {
-                    System.out.println("could not save object with id " + key + ", user not found!");
-                    return false;
-                } else if (UserManager.getInstance().getSqlType(student.getUser().getUserId()) == null) {
-                    UserManager.getInstance().save(key, student.getUser());
-                }
-
-                userId = student.getUser().getUserId();
-            } else {
-                System.out.println("invalid object in " + getManagerName() + "-cache found.");
-                return false;
-            }
-
+        } finally {
             try {
-                PreparedStatement statement = SqlHelper.getStatement(
-                        "INSERT INTO `teacher` (`teacher_id`, `user_id`) VALUES (?, ?) " +
-                                "ON DUPLICATE KEY UPDATE `user_id`=?");
-                statement.setInt(1, value.getTeacherId());
-                statement.setInt(2, userId);
-                statement.setInt(3, userId);
-                statement.executeUpdate();
-                return true;
+                conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
-                return false;
             }
         }
     }
 
-
     @Override
-    public boolean validate(AbstractTeacher value) {
-        if (value instanceof ISqlType) {
-            return UserManager.getInstance().contains(((Teacher) value).getUserId());
-        } else if (value instanceof IComplexType) {
-            TeacherComplex complex = (TeacherComplex) value;
-            if (complex.getUser() == null) {
-                return false;
+    public Teacher getSimple(int key) {
+
+        Connection conn = SqlHelper.getConnection();
+        try {
+            PreparedStatement statement = conn.prepareStatement(
+                    "select teacher_id, user_id from teacher where teacher_id = ?;");
+            statement.setInt(1, key);
+            ResultSet set = statement.executeQuery();
+
+            if (set.next()) {
+                int teacherId = set.getInt("teacher_id");
+                return new Teacher(
+                        teacherId,
+                        set.getInt("user_id")
+                );
+            } else {
+                return null;
             }
-            return UserManager.getInstance().validate(complex.getUser());
-        } else {
-            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
-    public String getManagerName() {
-        return "teacher";
+    public boolean updateComplex(TeacherComplex complex) {
+        return false;
+    }
+
+    @Override
+    public boolean updateSimple(Teacher simple) {
+        return false;
     }
 }
