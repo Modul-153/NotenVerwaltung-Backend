@@ -1,3 +1,9 @@
+BEGIN;
+
+drop database if exists notenverwaltung;
+create database notenverwaltung;
+use notenverwaltung;
+
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`city`
 -- -----------------------------------------------------
@@ -11,6 +17,16 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`city`
 )
     ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `notenverwaltung`.`subject`
+-- -----------------------------------------------------
+create table if not exists `notenverwaltung`.`subject`
+(
+    `subject_id` int not null,
+    `name` varchar(50) not null,
+    unique index `subject_id_UNIQUE` (`subject_id` ASC)
+)
+    ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`adress`
@@ -56,14 +72,14 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
 
 
 -- -----------------------------------------------------
--- Table `notenverwaltung`.`usercredentials`
+-- Table `notenverwaltung`.`user_credential`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`usercredentials`
+CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user_credential`
 (
     `user_id`  INT           NOT NULL,
     `password` VARCHAR(1000) NOT NULL,
     INDEX `user_id_idx` (`user_id` ASC),
-    CONSTRAINT `fk_user_id_usercredentials`
+    CONSTRAINT `fk_user_id_user_credential`
         FOREIGN KEY (`user_id`)
             REFERENCES `notenverwaltung`.`user` (`user_id`)
             ON DELETE NO ACTION
@@ -111,32 +127,9 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class`
 
 
 -- -----------------------------------------------------
--- Table `notenverwaltung`.`class_members`
+-- Table `notenverwaltung`.`exam`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class_members`
-(
-    `user_id`  INT NOT NULL,
-    `class_id` INT NOT NULL,
-    UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC),
-    INDEX `class_id_idx` (`class_id` ASC),
-    CONSTRAINT `fk_user_id_class_members`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `notenverwaltung`.`user` (`user_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_class_id_class_members`
-        FOREIGN KEY (`class_id`)
-            REFERENCES `notenverwaltung`.`class` (`class_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `notenverwaltung`.`exams`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`exams`
+CREATE TABLE IF NOT EXISTS `notenverwaltung`.`exam`
 (
     `exam_id` INT  NOT NULL AUTO_INCREMENT,
     `mark`    INT  NOT NULL,
@@ -145,13 +138,14 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`exams`
     PRIMARY KEY (`exam_id`),
     UNIQUE INDEX `exam_id_UNIQUE` (`exam_id` ASC),
     INDEX `user_id_idx` (`user_id` ASC),
-    CONSTRAINT `fk_user_id_exams`
+    CONSTRAINT `fk_user_id_exam`
         FOREIGN KEY (`user_id`)
             REFERENCES `notenverwaltung`.`user` (`user_id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 )
     ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`teacher`
@@ -189,3 +183,91 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`student`
             ON UPDATE NO ACTION
 )
     ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `notenverwaltung`.`class_member`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class_member`
+(
+    `student_id`  INT NOT NULL,
+    `class_id` INT NOT NULL,
+    `from` date NOT NULL,
+    `to` date NOT NULL,
+    UNIQUE INDEX `user_id_UNIQUE` (`student_id` ASC),
+    INDEX `class_id_idx` (`class_id` ASC),
+    CONSTRAINT `fk_teacher_id_class_member`
+        FOREIGN KEY (`student_id`)
+            REFERENCES `notenverwaltung`.`student` (`student_id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION,
+    CONSTRAINT `fk_class_id_class_member`
+        FOREIGN KEY (`class_id`)
+            REFERENCES `notenverwaltung`.`class` (`class_id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+)
+    ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `notenverwaltung`.`teacher_class_subject`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher_class_subject`
+(
+    `tcs_id`  INT NOT NULL,
+    `teacher_id` INT NOT NULL,
+    `class_id` INT NOT NULL,
+    `subject_id` INT NOT NULL,
+    `from` date NOT NULL,
+    `to` date NOT NULL,
+    UNIQUE INDEX `tcs_id_UNIQUE` (`tcs_id` ASC),
+    PRIMARY KEY (`tcs_id`),
+    INDEX `tcs_id_idx` (`class_id` ASC),
+    CONSTRAINT `fk_tcs_teacher_id`
+        FOREIGN KEY (`teacher_id`)
+            REFERENCES `notenverwaltung`.`teacher` (`teacher_id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION,
+    CONSTRAINT `fk_tcs_class_id`
+        FOREIGN KEY (`class_id`)
+            REFERENCES `notenverwaltung`.`class` (`class_id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION,
+    CONSTRAINT `fk_tcs_subject_id`
+        FOREIGN KEY (`subject_id`)
+            REFERENCES `notenverwaltung`.`subject` (`subject_id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+)
+    ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `notenverwaltung`.`primary_info`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `notenverwaltung`.`primary_info`
+(
+    `primary_info_id`  INT NOT NULL,
+    `teacher_id` INT NOT NULL,
+    `class_id` INT NOT NULL,
+    `from` date NOT NULL,
+    `to` date NOT NULL,
+    UNIQUE INDEX `primary_info_id_UNIQUE` (`primary_info_id` ASC),
+    INDEX `primary_info_teacher_id_idx` (`teacher_id` ASC),
+    INDEX `primary_info_class_id_idx` (`class_id` ASC),
+    PRIMARY KEY (`primary_info_id`),
+    CONSTRAINT `fk_primary_info_teacher_id`
+        FOREIGN KEY (`teacher_id`)
+            REFERENCES `notenverwaltung`.`teacher` (`teacher_id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION,
+    CONSTRAINT `fk_primary_info_class_id`
+        FOREIGN KEY (`class_id`)
+            REFERENCES `notenverwaltung`.`class` (`class_id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+)
+    ENGINE = InnoDB;
+
+COMMIT;

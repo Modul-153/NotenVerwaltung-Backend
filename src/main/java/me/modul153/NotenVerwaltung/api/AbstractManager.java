@@ -2,6 +2,7 @@ package me.modul153.NotenVerwaltung.api;
 
 import net.myplayplanet.services.cache.AbstractSaveProvider;
 import net.myplayplanet.services.cache.Cache;
+import net.myplayplanet.services.cache.advanced.ListCache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & IAbstract, R extends IComplexType & IAbstract> {
 
-    private Cache<Integer, M> iDataObjectCache;
+    private ListCache<Integer, M> iDataObjectCache;
     private List<String> notSave;
     private HashMap<Integer, String> dontSave;
     private List<Integer> oneTimeNoSave;
@@ -18,7 +19,8 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
         notSave = new ArrayList<>();
         dontSave = new HashMap<>();
         oneTimeNoSave = new ArrayList<>();
-        iDataObjectCache = new Cache<>(getManagerName() + "-cache", -1L, key -> {
+        iDataObjectCache = new ListCache<>(getManagerName() + "-cache", key -> {
+
             M m = loadIDataObjectComplex(key);
 
             if (m != null) {
@@ -54,9 +56,10 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
                 oneTimeNoSave.addAll(integerMHashMap.keySet());
                 return integerMHashMap;
             }
-        });
+        }, m -> getKeyFromValue());
     }
 
+    public abstract int getKeyFromValue();
 
     /***
      * SQL implemention des ladens alles Objekte, wird ein mal am start gemacht.
@@ -128,14 +131,14 @@ public abstract class AbstractManager<M extends IAbstract, B extends ISqlType & 
 
     public void add(Integer key, M value) {
         if (validate(value)) {
-            iDataObjectCache.update(key, value);
+            iDataObjectCache.addItem(key, value);
         } else {
             System.out.println("invalid object with id " + key);
         }
     }
 
     public void clearCache() {
-        iDataObjectCache.clearCache();
+        iDataObjectCache.clear();
     }
 
     /**
