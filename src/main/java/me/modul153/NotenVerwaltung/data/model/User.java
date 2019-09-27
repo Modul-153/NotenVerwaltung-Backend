@@ -15,15 +15,15 @@ import java.sql.SQLException;
 public class User extends AbstractUser implements ISqlType {
     public int cityId;
 
-    public User(int userId, String firstname, String lastname, String username, String street, int number, int cityId) {
-        super(userId, firstname, lastname, username, street, number);
+    public User(int userId, String firstname, String lastname, String username, String street, int number,String password, int cityId) {
+        super(userId, firstname, lastname, username, street, number, password);
         this.cityId = cityId;
     }
 
     @Override
     public UserComplex toComplexType() {
         try {
-            return new UserComplex(getUserId(), getFirstname(), getLastname(), getUsername(), getStreet(), getNumber(),
+            return new UserComplex(getUserId(), getFirstname(), getLastname(), getUsername(), getStreet(), getNumber(), getPassword(),
                     CityManager.getInstance().getComplex(getCityId()));
         } catch (SQLException e) {
             e.printStackTrace();

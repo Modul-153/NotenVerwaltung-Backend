@@ -11,8 +11,8 @@ import me.modul153.NotenVerwaltung.data.model.User;
 public class UserComplex extends AbstractUser implements IComplexType {
     private City city;
 
-    public UserComplex(int userId, String firstname, String lastname, String username, String street, int number, City city) {
-        super(userId, firstname, lastname, username, street, number);
+    public UserComplex(int userId, String firstname, String lastname, String username, String street, int number,String password, City city) {
+        super(userId, firstname, lastname, username, street, number,password);
         this.city = city;
     }
 

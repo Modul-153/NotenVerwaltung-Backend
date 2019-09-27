@@ -27,7 +27,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
         HashMap<Integer, UserComplex> result = new HashMap<>();
         Connection conn = SqlHelper.getConnection();
         try {
-            ResultSet set = conn.prepareStatement("select user_id, firstname, lastname, username, street, number, city.name as city_name, city.zipcode as zipcode from `user` join city on `user`.city_id = city.city_id order by user_id;").executeQuery();
+            ResultSet set = conn.prepareStatement("select user_id, firstname, lastname, username, street, number, password,city.name as city_name, city.zipcode as zipcode from `user` join city using(city_id) order by user_id;").executeQuery();
 
             while (set.next()) {
                 int user_id = set.getInt("user_id");
@@ -39,6 +39,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                                 set.getString("username"),
                                 set.getString("street"),
                                 set.getInt("number"),
+                                set.getString("password"),
                                 new City(
                                         set.getInt("city_id"),
                                         set.getInt("zipcode"),
@@ -58,7 +59,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
         HashMap<Integer, User> result = new HashMap<>();
         Connection conn = SqlHelper.getConnection();
         try {
-            ResultSet set = conn.prepareStatement("select user_id, firstname, lastname, username, street, number,city.city_id as city_id, city.name as city_name, city.zipcode as zipcode from `user` join city on `user`.city_id = city.city_id order by user_id;").executeQuery();
+            ResultSet set = conn.prepareStatement("select user_id, firstname, lastname, username, street, number, password,city.city_id as city_id, city.name as city_name, city.zipcode as zipcode from `user` join city on `user`.city_id = city.city_id order by user_id;").executeQuery();
             while (set.next()) {
                 int user_id = set.getInt("user_id");
                 result.put(user_id,
@@ -69,6 +70,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                                 set.getString("username"),
                                 set.getString("street"),
                                 set.getInt("number"),
+                                set.getString("password"),
                                 set.getInt("city_id")
                         )
                 );
@@ -89,11 +91,12 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                     "       username," +
                     "       street," +
                     "       number," +
+                    "       password," +
                     "       city.city_id as city_id," +
                     "       city.name    as city_name," +
                     "       city.zipcode as zipcode " +
                     "from `user`" +
-                    "         join city on `user`.city_id = city.city_id " +
+                    "         join city using(city_id) " +
                     "where user_id = ?;");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
@@ -106,6 +109,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                         set.getString("username"),
                         set.getString("street"),
                         set.getInt("number"),
+                        set.getString("password"),
                         new City(
                                 set.getInt("city_id"),
                                 set.getInt("zipcode"),
@@ -124,7 +128,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
     public User getSimple(int key)  throws SQLException {
         Connection conn = SqlHelper.getConnection();
         try {
-            PreparedStatement statement = conn.prepareStatement("select user_id, firstname, lastname, username, street, number, city_id " +
+            PreparedStatement statement = conn.prepareStatement("select user_id, firstname, lastname, username, street, number, password,city_id " +
                     "from `user`" +
                     "where user_id = ?;");
             statement.setInt(1, key);
@@ -138,6 +142,7 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                         set.getString("username"),
                         set.getString("street"),
                         set.getInt("number"),
+                        set.getString("password"),
                         set.getInt("city_id")
                 );
             } else {

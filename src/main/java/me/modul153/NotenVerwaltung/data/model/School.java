@@ -5,15 +5,19 @@ import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractSchool;
 import me.modul153.NotenVerwaltung.data.complex.SchoolComplex;
-import me.modul153.NotenVerwaltung.managers.AdressManager;
+import me.modul153.NotenVerwaltung.managers.CityManager;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.sql.SQLException;
 
 @Data
 public class School extends AbstractSchool implements ISqlType {
-    int adressId;
+    int cityId;
 
-    public School(int schoolId, String schoolName, int adressId) {
+    public School(int schoolId, String schoolName, int cityId) {
         super(schoolId, schoolName);
-        this.adressId = adressId;
+        this.cityId = cityId;
     }
 
     @Override
@@ -23,6 +27,11 @@ public class School extends AbstractSchool implements ISqlType {
 
     @Override
     public SchoolComplex toComplexType() {
-        return new SchoolComplex(getSchoolId(), getSchoolName(), AdressManager.getInstance().getComplexType(getAdressId()));
+        try {
+            return new SchoolComplex(getSchoolId(), getSchoolName(), CityManager.getInstance().getComplex(getCityId()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error loading city with id " + getCityId() + "\n" + e.getMessage());
+        }
     }
 }
