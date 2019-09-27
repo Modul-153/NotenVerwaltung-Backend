@@ -14,8 +14,16 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class UserManager extends AbstractManager<AbstractUser, User, UserComplex> {
+    private static UserManager userManager = null;
+
+    public static UserManager getInstance() {
+        if (userManager == null) {
+            userManager = new UserManager();
+        }
+        return userManager;
+    }
     @Override
-    public HashMap<Integer, UserComplex> getAllComplex() {
+    public HashMap<Integer, UserComplex> getAllComplex() throws SQLException {
         HashMap<Integer, UserComplex> result = new HashMap<>();
         Connection conn = SqlHelper.getConnection();
         try {
@@ -40,20 +48,13 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                 );
             }
             return result;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        }finally {
+            conn.close();
         }
     }
 
     @Override
-    public HashMap<Integer, User> getAllSimple() {
+    public HashMap<Integer, User> getAllSimple() throws SQLException {
         HashMap<Integer, User> result = new HashMap<>();
         Connection conn = SqlHelper.getConnection();
         try {
@@ -73,20 +74,13 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
                 );
             }
             return result;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            conn.close();
         }
     }
 
     @Override
-    public UserComplex getComplex(int key) {
+    public UserComplex getComplex(int key) throws SQLException {
         Connection conn = SqlHelper.getConnection();
         try {
             PreparedStatement statement = conn.prepareStatement("select user_id," +
@@ -121,20 +115,13 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             } else {
                 return null;
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            conn.close();
         }
     }
 
     @Override
-    public User getSimple(int key) {
+    public User getSimple(int key)  throws SQLException {
         Connection conn = SqlHelper.getConnection();
         try {
             PreparedStatement statement = conn.prepareStatement("select user_id, firstname, lastname, username, street, number, city_id " +
@@ -156,22 +143,16 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             } else {
                 return null;
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        }  finally {
+            conn.close();
         }
     }
 
     @Override
-    public boolean updateComplex(UserComplex complex) {
+    public boolean updateComplex(UserComplex complex)  throws SQLException {
         Connection conn = SqlHelper.getConnection();
         try {
+            conn.setAutoCommit(false);
             PreparedStatement s1 = conn.prepareStatement(
                     "insert into city (city_id, name, zipcode)" +
                             "VALUES (?,?,?)" +
@@ -206,31 +187,29 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             s2.setString(6, complex.getStreet());
             s2.setInt(7, complex.getCity().getCityId());
             s2.executeUpdate();
+            conn.commit();
             return true;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
-        } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        }catch (SQLException ex) {
+            conn.rollback();
+            throw ex;
+        }
+        finally {
+            conn.close();
         }
     }
 
     @Override
-    public boolean updateSimple(User simple) {
+    public boolean updateSimple(User simple)  throws SQLException {
         Connection conn = SqlHelper.getConnection();
         try {
-            PreparedStatement statement = conn.prepareStatement("insert into user (user_id, firstname, lastname, username, number, street, city_id)\n" +
+            PreparedStatement statement = conn.prepareStatement("insert into user (user_id, firstname, lastname, username, number, street, city_id)" +
                     "values (?,?,?,?,?,?,?)\n" +
-                    "on duplicate key update firstname=VALUES(firstname),\n" +
-                    "                        lastname=VALUES(lastname),\n" +
-                    "                        username=VALUES(username),\n" +
-                    "                        number=VALUES(number),\n" +
-                    "                        street=VALUES(street),\n" +
-                    "                        city_id=VALUES(city_id)\n" +
+                    "on duplicate key update firstname=VALUES(firstname)," +
+                    "                        lastname=VALUES(lastname)," +
+                    "                        username=VALUES(username)," +
+                    "                        number=VALUES(number)," +
+                    "                        street=VALUES(street)," +
+                    "                        city_id=VALUES(city_id)" +
                     ";");
 
             statement.setInt(1, simple.getUserId());
@@ -242,15 +221,8 @@ public class UserManager extends AbstractManager<AbstractUser, User, UserComplex
             statement.setInt(7, simple.getCityId());
             statement.executeUpdate();
             return true;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            conn.close();
         }
     }
 }

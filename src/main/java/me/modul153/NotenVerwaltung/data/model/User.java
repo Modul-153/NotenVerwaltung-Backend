@@ -6,6 +6,10 @@ import me.modul153.NotenVerwaltung.api.ISqlType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractUser;
 import me.modul153.NotenVerwaltung.data.complex.UserComplex;
 import me.modul153.NotenVerwaltung.managers.CityManager;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.sql.SQLException;
 
 @Data
 public class User extends AbstractUser implements ISqlType {
@@ -18,8 +22,13 @@ public class User extends AbstractUser implements ISqlType {
 
     @Override
     public UserComplex toComplexType() {
-        return new UserComplex(getUserId(), getFirstname(), getLastname(), getUsername(), getStreet(), getNumber(),
-                CityManager.getInstance().getComplex(getCityId()));
+        try {
+            return new UserComplex(getUserId(), getFirstname(), getLastname(), getUsername(), getStreet(), getNumber(),
+                    CityManager.getInstance().getComplex(getCityId()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error loading city with id " + getCityId() + "\n" + e.getMessage());
+        }
     }
 
     @Override

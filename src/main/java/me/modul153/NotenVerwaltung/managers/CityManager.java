@@ -21,7 +21,7 @@ public class CityManager extends AbstractManager<City, City, City> {
     }
 
     @Override
-    public HashMap<Integer, City> getAllComplex() {
+    public HashMap<Integer, City> getAllComplex() throws SQLException {
         HashMap<Integer, City> map = new HashMap<>();
         Connection conn = SqlHelper.getConnection();
         try {
@@ -34,25 +34,18 @@ public class CityManager extends AbstractManager<City, City, City> {
                 map.put(key, new City(key, set.getInt("zipcode"), set.getString("name")));
             }
             return map;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
         }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            conn.close();
         }
     }
 
     @Override
-    public HashMap<Integer, City> getAllSimple() {
+    public HashMap<Integer, City> getAllSimple()  throws SQLException {
         return getAllComplex();
     }
 
     @Override
-    public City getComplex(int key) {
+    public City getComplex(int key)  throws SQLException{
         Connection conn = SqlHelper.getConnection();
         try {
             PreparedStatement statement = conn.prepareStatement("select `zipcode`,`name` from `notenverwaltung`.`city` where `city_id` = ?");
@@ -63,50 +56,35 @@ public class CityManager extends AbstractManager<City, City, City> {
             } else {
                 return null;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
         }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            conn.close();
         }
     }
 
     @Override
-    public City getSimple(int key) {
+    public City getSimple(int key) throws SQLException {
         return getComplex(key);
     }
 
     @Override
-    public boolean updateComplex(City value) {
+    public boolean updateComplex(City value)  throws SQLException {
         Connection conn = SqlHelper.getConnection();
         try {
             PreparedStatement statement = conn.prepareStatement(
-                    "INSERT INTO `city` (`city_id`, `zipcode`, `name`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `zipcode`=?,`name`=?");
+                    "INSERT INTO `city` (`city_id`, `zipcode`, `name`) VALUES (?, ?, ?) " +
+                            "ON DUPLICATE KEY UPDATE `zipcode`=VALUES(zipcode),`name`=VALUES(name)");
             statement.setInt(1, value.getCityId());
             statement.setInt(2, value.getZipCode());
             statement.setString(3, value.getName());
-            statement.setInt(4, value.getZipCode());
-            statement.setString(5, value.getName());
             statement.executeUpdate();
             return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            conn.close();
         }
     }
 
     @Override
-    public boolean updateSimple(City simple) {
+    public boolean updateSimple(City simple) throws SQLException {
         return updateComplex(simple);
     }
 }

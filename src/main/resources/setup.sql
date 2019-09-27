@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
     `number`    INT             NOT NULL,
     `street`    VARCHAR(45)     NOT NULL,
     `city_id`   BIGINT UNSIGNED NOT NULL,
+    `password` VARCHAR(1000)    NOT NULL,
     PRIMARY KEY (`user_id`),
     UNIQUE INDEX `idPersonTable_UNIQUE` (`user_id` ASC),
     INDEX `adress_id_idx` (`city_id` ASC),
@@ -50,24 +51,6 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
             ON UPDATE NO ACTION
 )
     ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `notenverwaltung`.`user_credential`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user_credential`
-(
-    `user_id`  SERIAL,
-    `password` VARCHAR(1000) NOT NULL,
-    INDEX `user_id_idx` (`user_id` ASC),
-    CONSTRAINT `fk_user_id_user_credential`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `notenverwaltung`.`user` (`user_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`school`
@@ -88,7 +71,6 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`school`
             ON UPDATE NO ACTION
 )
     ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`class`

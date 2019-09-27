@@ -4,15 +4,16 @@ import lombok.Data;
 import me.modul153.NotenVerwaltung.api.AbstractionType;
 import me.modul153.NotenVerwaltung.api.IComplexType;
 import me.modul153.NotenVerwaltung.data.abstracts.AbstractSchool;
+import me.modul153.NotenVerwaltung.data.abstracts.City;
 import me.modul153.NotenVerwaltung.data.model.School;
 
 @Data
 public class SchoolComplex extends AbstractSchool implements IComplexType {
-    AdressComplex adress;
+    City city;
 
-    public SchoolComplex(int schoolId, String schoolName, AdressComplex adress) {
+    public SchoolComplex(int schoolId, String schoolName, City adress) {
         super(schoolId, schoolName);
-        this.adress = adress;
+        this.city = adress;
     }
 
     @Override
@@ -22,6 +23,6 @@ public class SchoolComplex extends AbstractSchool implements IComplexType {
 
     @Override
     public School toSqlType() {
-        return new School(getSchoolId(), getSchoolName(), getAdress().getAdressId());
+        return new School(getSchoolId(), getSchoolName(), getCity().getCityId());
     }
 }

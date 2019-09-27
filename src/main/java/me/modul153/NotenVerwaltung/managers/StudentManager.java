@@ -1,9 +1,9 @@
 package me.modul153.NotenVerwaltung.managers;
 
 import me.modul153.NotenVerwaltung.api.AbstractManager;
-import me.modul153.NotenVerwaltung.data.abstracts.AbstractTeacher;
-import me.modul153.NotenVerwaltung.data.complex.TeacherComplex;
-import me.modul153.NotenVerwaltung.data.model.Teacher;
+import me.modul153.NotenVerwaltung.data.abstracts.AbstractStudent;
+import me.modul153.NotenVerwaltung.data.complex.StudentComplex;
+import me.modul153.NotenVerwaltung.data.model.Student;
 import me.modul153.NotenVerwaltung.data.model.User;
 import me.modul153.NotenVerwaltung.helper.SqlHelper;
 
@@ -13,32 +13,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, TeacherComplex> {
-    private static TeacherManager teacherManager = null;
+public class StudentManager extends AbstractManager<AbstractStudent, Student, StudentComplex> {
+    private static StudentManager studentManager = null;
 
-    public static TeacherManager getInstance() {
-        if (teacherManager == null) {
-            teacherManager = new TeacherManager();
+    public static StudentManager getInstance() {
+        if (studentManager == null) {
+            studentManager = new StudentManager();
         }
-        return teacherManager;
+        return studentManager;
     }
 
     @Override
-    public HashMap<Integer, TeacherComplex> getAllComplex() throws SQLException {
+    public HashMap<Integer, StudentComplex> getAllComplex() throws SQLException {
 
         Connection conn = SqlHelper.getConnection();
         try {
-            HashMap<Integer, TeacherComplex> result = new HashMap<>();
+            HashMap<Integer, StudentComplex> result = new HashMap<>();
             ResultSet set = conn.prepareStatement(
-                    "select teacher_id,user_id, firstname, lastname, username, number, street, city_id " +
-                            "from teacher " +
+                    "select student_id,user_id, firstname, lastname, username, number, street, city_id " +
+                            "from student " +
                             "         join user using(user_id) " +
-                            "order by teacher_id;").executeQuery();
+                            "order by student_id;").executeQuery();
             while (set.next()) {
-                int teacherId = set.getInt("teacher_id");
-                result.put(teacherId,
-                        new TeacherComplex(
-                                teacherId,
+                int studentId = set.getInt("student_id");
+                result.put(studentId,
+                        new StudentComplex(
+                                studentId,
                                 new User(
                                         set.getInt("user_id"),
                                         set.getString("firstname"),
@@ -58,19 +58,19 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
     }
 
     @Override
-    public HashMap<Integer, Teacher> getAllSimple() throws SQLException {
+    public HashMap<Integer, Student> getAllSimple() throws SQLException {
 
         Connection conn = SqlHelper.getConnection();
         try {
-            HashMap<Integer, Teacher> result = new HashMap<>();
+            HashMap<Integer, Student> result = new HashMap<>();
             ResultSet set = conn.prepareStatement(
-                    "select teacher_id, user_id from teacher order by teacher_id;").executeQuery();
+                    "select student_id, user_id from student order by student_id;").executeQuery();
 
             while (set.next()) {
-                int teacherId = set.getInt("teacher_id");
-                result.put(teacherId,
-                        new Teacher(
-                                teacherId,
+                int studentId = set.getInt("student_id");
+                result.put(studentId,
+                        new Student(
+                                studentId,
                                 set.getInt("user_id")
                         )
                 );
@@ -85,19 +85,19 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
     }
 
     @Override
-    public TeacherComplex getComplex(int key) throws SQLException {
+    public StudentComplex getComplex(int key) throws SQLException {
         Connection conn = SqlHelper.getConnection();
         try {
             PreparedStatement statement = conn.prepareStatement(
                     "select user_id, firstname, lastname, username, number, street, city_id " +
-                            "from teacher " +
-                            "         join user u on teacher.user_id = u.user_id " +
-                            "where teacher_id = ?;");
+                            "from student " +
+                            "         join user u on student.user_id = u.user_id " +
+                            "where student_id = ?;");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
 
             if (set.next()) {
-                return new TeacherComplex(
+                return new StudentComplex(
                         key,
                         new User(
                                 set.getInt("user_id"),
@@ -122,19 +122,19 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
     }
 
     @Override
-    public Teacher getSimple(int key) throws SQLException {
+    public Student getSimple(int key) throws SQLException {
 
         Connection conn = SqlHelper.getConnection();
         try {
             PreparedStatement statement = conn.prepareStatement(
-                    "select teacher_id, user_id from teacher where teacher_id = ?;");
+                    "select student_id, user_id from student where student_id = ?;");
             statement.setInt(1, key);
             ResultSet set = statement.executeQuery();
 
             if (set.next()) {
-                int teacherId = set.getInt("teacher_id");
-                return new Teacher(
-                        teacherId,
+                int studentId = set.getInt("student_id");
+                return new Student(
+                        studentId,
                         set.getInt("user_id")
                 );
             } else {
@@ -146,7 +146,7 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
     }
 
     @Override
-    public boolean updateComplex(TeacherComplex complex) throws SQLException {
+    public boolean updateComplex(StudentComplex complex) throws SQLException {
         Connection conn = SqlHelper.getConnection();
         try {
             conn.setAutoCommit(false);
@@ -169,11 +169,11 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
             s2.setInt(7, complex.getUser().getCityId());
             s2.executeUpdate();
 
-            PreparedStatement s1 = conn.prepareStatement("insert into teacher (teacher_id, user_id) " +
+            PreparedStatement s1 = conn.prepareStatement("insert into student (student_id, user_id) " +
                     "VALUES (?, ?) " +
                     "on duplicate key update user_id=VALUES(user_id)");
 
-            s1.setInt(1, complex.getTeacherId());
+            s1.setInt(1, complex.getStudentId());
             s1.setInt(2, complex.getUser().getUserId());
             conn.commit();
             return true;
@@ -187,14 +187,14 @@ public class TeacherManager extends AbstractManager<AbstractTeacher, Teacher, Te
     }
 
     @Override
-    public boolean updateSimple(Teacher simple) throws SQLException {
+    public boolean updateSimple(Student simple) throws SQLException {
         Connection conn = SqlHelper.getConnection();
         try {
-            PreparedStatement s1 = conn.prepareStatement("insert into teacher (teacher_id, user_id) " +
+            PreparedStatement s1 = conn.prepareStatement("insert into student (student_id, user_id) " +
                     "VALUES (?, ?) " +
                     "on duplicate key update user_id=VALUES(user_id)");
 
-            s1.setInt(1, simple.getTeacherId());
+            s1.setInt(1, simple.getStudentId());
             s1.setInt(2, simple.getUserId());
             return true;
         }finally {
