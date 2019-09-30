@@ -11,9 +11,9 @@ import me.modul153.NotenVerwaltung.data.model.School;
 public class SchoolComplex extends AbstractSchool implements IComplexType {
     City city;
 
-    public SchoolComplex(int schoolId, String schoolName, City adress) {
-        super(schoolId, schoolName);
-        this.city = adress;
+    public SchoolComplex(int schoolId, String schoolName, String street, int number, City city) {
+        super(schoolId, schoolName, street, number);
+        this.city = city;
     }
 
     @Override
@@ -23,6 +23,6 @@ public class SchoolComplex extends AbstractSchool implements IComplexType {
 
     @Override
     public School toSqlType() {
-        return new School(getSchoolId(), getSchoolName(), getCity().getCityId());
+        return new School(getSchoolId(), getSchoolName(), getStreet(), getNumber(),getCity().getCityId());
     }
 }

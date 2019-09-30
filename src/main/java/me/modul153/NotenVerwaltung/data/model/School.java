@@ -15,8 +15,8 @@ import java.sql.SQLException;
 public class School extends AbstractSchool implements ISqlType {
     int cityId;
 
-    public School(int schoolId, String schoolName, int cityId) {
-        super(schoolId, schoolName);
+    public School(int schoolId, String schoolName, String street, int number, int cityId) {
+        super(schoolId, schoolName, street, number);
         this.cityId = cityId;
     }
 
@@ -28,7 +28,7 @@ public class School extends AbstractSchool implements ISqlType {
     @Override
     public SchoolComplex toComplexType() {
         try {
-            return new SchoolComplex(getSchoolId(), getSchoolName(), CityManager.getInstance().getComplex(getCityId()));
+            return new SchoolComplex(getSchoolId(), getSchoolName(), getStreet(),getNumber(),CityManager.getInstance().getComplex(getCityId()));
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error loading city with id " + getCityId() + "\n" + e.getMessage());

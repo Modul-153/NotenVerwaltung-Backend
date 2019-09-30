@@ -9,4 +9,6 @@ import me.modul153.NotenVerwaltung.api.IAbstract;
 public abstract class AbstractSchool implements IAbstract {
     int schoolId;
     String schoolName;
+    String street;
+    int number;
 }
