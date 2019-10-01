@@ -134,10 +134,8 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class_member`
 (
     `student_id` BIGINT UNSIGNED NOT NULL,
     `class_id`   BIGINT UNSIGNED NOT NULL,
-    `from`       date            NOT NULL,
-    `to`         date            NOT NULL,
     INDEX `class_id_idx` (`class_id` ASC),
-    CONSTRAINT `fk_teacher_id_class_member`
+    CONSTRAINT `fk_student_id_class_member`
         FOREIGN KEY (`student_id`)
             REFERENCES `notenverwaltung`.`student` (`student_id`)
             ON DELETE NO ACTION
@@ -160,8 +158,6 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher_class_subject`
     `teacher_id` BIGINT UNSIGNED NOT NULL,
     `class_id`   BIGINT UNSIGNED NOT NULL,
     `subject_id` BIGINT UNSIGNED NOT NULL,
-    `from`       date            NOT NULL,
-    `to`         date            NOT NULL,
     primary key (tcs_id),
     constraint u_tcs unique (teacher_id, class_id, subject_id),
     CONSTRAINT `fk_tcs_teacher_id`
