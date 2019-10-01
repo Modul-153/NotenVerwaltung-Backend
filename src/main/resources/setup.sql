@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`city`
 create table if not exists `notenverwaltung`.`subject`
 (
     `subject_id` SERIAL,
-    `name`       varchar(50) not null,
+    `name`       varchar(50) not null unique,
     primary key (subject_id)
 )
     ENGINE = InnoDB;
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
     `user_id`   SERIAL,
     `firstname` VARCHAR(45)     NOT NULL,
     `lastname`  VARCHAR(45)     NOT NULL,
-    `username`  VARCHAR(45)     NOT NULL,
+    `username`  VARCHAR(45)     NOT NULL unique,
     `number`    INT             NOT NULL,
     `street`    VARCHAR(45)     NOT NULL,
     `city_id`   BIGINT UNSIGNED NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`school`
 (
     `school_id`  SERIAL,
-    `schoolname` VARCHAR(45)     NOT NULL,
+    `schoolname` VARCHAR(45)     NOT NULL unique,
     `number`     INT             NOT NULL,
     `street`     VARCHAR(45)     NOT NULL,
     `city_id`    BIGINT UNSIGNED NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher`
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class`
 (
     `class_id`        SERIAL,
-    `name`            VARCHAR(45)     NOT NULL,
+    `name`            VARCHAR(45)     NOT NULL UNIQUE,
     `school_id`       BIGINT UNSIGNED NOT NULL,
     `primary_teacher` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`class_id`),
@@ -202,8 +202,8 @@ create table `notenverwaltung`.`exam_result`
     student_id bigint unsigned        not null,
     mark       decimal(3, 2) unsigned not null,
     constraint u_exam_student unique (exam_id, student_id),
-    constraint fk_exam_result_exam foreign key (exam_id) references exam(exam_id),
-    constraint fk_exam_result_student foreign key (student_id) references student(student_id)
+    constraint fk_exam_result_exam foreign key (exam_id) references exam (exam_id),
+    constraint fk_exam_result_student foreign key (student_id) references student (student_id)
 );
 
 COMMIT;
