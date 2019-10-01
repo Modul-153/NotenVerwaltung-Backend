@@ -14,5 +14,4 @@ public class School implements Serializable {
     private String street;
     private int number;
     private City city;
-    private List<Integer> classes;
 }
