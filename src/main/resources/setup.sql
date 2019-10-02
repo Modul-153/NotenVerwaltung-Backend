@@ -76,10 +76,28 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`school`
 CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher`
 (
     `teacher_id` SERIAL,
-    `user_id`    BIGINT UNSIGNED NOT NULL,
+    `user_id`    BIGINT UNSIGNED NOT NULL unique ,
     PRIMARY KEY (`teacher_id`),
     INDEX `user_id_idx` (`user_id` ASC),
     CONSTRAINT `fk_user_id_teacher`
+        FOREIGN KEY (`user_id`)
+            REFERENCES `notenverwaltung`.`user` (`user_id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+)
+    ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `notenverwaltung`.`teacher`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `notenverwaltung`.`administrator_id`
+(
+    `administrator_id` SERIAL,
+    `user_id`    BIGINT UNSIGNED NOT NULL unique,
+    PRIMARY KEY (`administrator_id`),
+    INDEX `idx_administrator_user_id` (`user_id` ASC),
+    CONSTRAINT `fk_administrator_user_id`
         FOREIGN KEY (`user_id`)
             REFERENCES `notenverwaltung`.`user` (`user_id`)
             ON DELETE NO ACTION
@@ -205,5 +223,7 @@ create table `notenverwaltung`.`exam_result`
     constraint fk_exam_result_exam foreign key (exam_id) references exam (exam_id),
     constraint fk_exam_result_student foreign key (student_id) references student (student_id)
 );
+
+create table `notenverwaltung`.`adm`
 
 COMMIT;
