@@ -89,9 +89,9 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher`
 
 
 -- -----------------------------------------------------
--- Table `notenverwaltung`.`teacher`
+-- Table `notenverwaltung`.`administrator`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`administrator_id`
+CREATE TABLE IF NOT EXISTS `notenverwaltung`.`administrator`
 (
     `administrator_id` SERIAL,
     `user_id`    BIGINT UNSIGNED NOT NULL unique,
@@ -223,7 +223,5 @@ create table `notenverwaltung`.`exam_result`
     constraint fk_exam_result_exam foreign key (exam_id) references exam (exam_id),
     constraint fk_exam_result_student foreign key (student_id) references student (student_id)
 );
-
-create table `notenverwaltung`.`adm`
 
 COMMIT;
