@@ -26,6 +26,8 @@ public class NotenVerwaltungApplication {
         ServiceCluster.addServices(true, new ScheduleService());
 
         //the order is important because of dependency between the objects
+        /*
+
         CityManager.getInstance();
         AdressManager.getInstance();
         UserManager.getInstance();
@@ -36,6 +38,9 @@ public class NotenVerwaltungApplication {
         ClassManager.getInstance();
 
         ExamManager.getInstance();
+
+         */
+
         //end
     }
 
@@ -43,9 +48,12 @@ public class NotenVerwaltungApplication {
         SpringApplication.run(NotenVerwaltungApplication.class, args);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             ServiceCluster.shutdownCluster();
+            /*
+
             UserManager.getInstance().clearCache();
             CityManager.getInstance().clearCache();
             AdressManager.getInstance().clearCache();
+             */
         }));
     }
 

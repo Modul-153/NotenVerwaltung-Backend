@@ -1,13 +1,12 @@
 BEGIN;
 
-drop database if exists notenverwaltung;
-create database notenverwaltung;
+
 use notenverwaltung;
 
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`city`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`city`
+CREATE TABLE `notenverwaltung`.`city`
 (
     `city_id` SERIAL,
     `name`    VARCHAR(45) NOT NULL,
@@ -19,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`city`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`subject`
 -- -----------------------------------------------------
-create table if not exists `notenverwaltung`.`subject`
+create table `notenverwaltung`.`subject`
 (
     `subject_id` SERIAL,
     `name`       varchar(50) not null unique,
@@ -30,7 +29,7 @@ create table if not exists `notenverwaltung`.`subject`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
+CREATE TABLE `notenverwaltung`.`user`
 (
     `user_id`   SERIAL,
     `firstname` VARCHAR(45)     NOT NULL,
@@ -52,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`user`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`school`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`school`
+CREATE TABLE `notenverwaltung`.`school`
 (
     `school_id`  SERIAL,
     `schoolname` VARCHAR(45)     NOT NULL unique,
@@ -73,10 +72,10 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`school`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`teacher`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher`
+CREATE TABLE `notenverwaltung`.`teacher`
 (
     `teacher_id` SERIAL,
-    `user_id`    BIGINT UNSIGNED NOT NULL unique ,
+    `user_id`    BIGINT UNSIGNED NOT NULL unique,
     PRIMARY KEY (`teacher_id`),
     INDEX `user_id_idx` (`user_id` ASC),
     CONSTRAINT `fk_user_id_teacher`
@@ -91,10 +90,10 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`administrator`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`administrator`
+CREATE TABLE `notenverwaltung`.`administrator`
 (
     `administrator_id` SERIAL,
-    `user_id`    BIGINT UNSIGNED NOT NULL unique,
+    `user_id`          BIGINT UNSIGNED NOT NULL unique,
     PRIMARY KEY (`administrator_id`),
     INDEX `idx_administrator_user_id` (`user_id` ASC),
     CONSTRAINT `fk_administrator_user_id`
@@ -108,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`administrator`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`class`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class`
+CREATE TABLE `notenverwaltung`.`class`
 (
     `class_id`        SERIAL,
     `name`            VARCHAR(45)     NOT NULL UNIQUE,
@@ -131,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`student`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`student`
+CREATE TABLE `notenverwaltung`.`student`
 (
     `student_id` SERIAL,
     `user_id`    BIGINT UNSIGNED NOT NULL unique,
@@ -148,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`student`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`class_member`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class_member`
+CREATE TABLE `notenverwaltung`.`class_member`
 (
     `student_id` BIGINT UNSIGNED NOT NULL,
     `class_id`   BIGINT UNSIGNED NOT NULL,
@@ -170,13 +169,11 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`class_member`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`teacher_class_subject`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher_class_subject`
+CREATE TABLE `notenverwaltung`.`teacher_class_subject`
 (
-    tcs_id       serial,
     `teacher_id` BIGINT UNSIGNED NOT NULL,
     `class_id`   BIGINT UNSIGNED NOT NULL,
     `subject_id` BIGINT UNSIGNED NOT NULL,
-    primary key (tcs_id),
     constraint u_tcs unique (teacher_id, class_id, subject_id),
     CONSTRAINT `fk_tcs_teacher_id`
         FOREIGN KEY (`teacher_id`)
@@ -199,17 +196,15 @@ CREATE TABLE IF NOT EXISTS `notenverwaltung`.`teacher_class_subject`
 -- -----------------------------------------------------
 -- Table `notenverwaltung`.`exam`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notenverwaltung`.`exam`
+CREATE TABLE `notenverwaltung`.`exam`
 (
-    `exam_id` SERIAL,
-    `date`    DATE            NOT NULL,
-    `tcs_id`  BIGINT UNSIGNED NOT NULL,
+    `exam_id`    SERIAL,
+    `name`       varchar(255)    NOT NULL unique,
+    `subject_id` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`exam_id`),
-    CONSTRAINT `fk_exam_tcs_id`
-        FOREIGN KEY (`tcs_id`)
-            REFERENCES `teacher_class_subject` (`tcs_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
+    CONSTRAINT `fk_exam_subject_id`
+        FOREIGN KEY (`subject_id`)
+            REFERENCES `subject` (`subject_id`)
 )
     ENGINE = InnoDB;
 
@@ -221,7 +216,18 @@ create table `notenverwaltung`.`exam_result`
     mark       decimal(3, 2) unsigned not null,
     constraint u_exam_student unique (exam_id, student_id),
     constraint fk_exam_result_exam foreign key (exam_id) references exam (exam_id),
-    constraint fk_exam_result_student foreign key (student_id) references student (student_id)
+    constraint fk_exam_result_student foreign key (student_id) references student (student_id),
+    constraint exam_result_exam_id_student_id unique (exam_id, student_id)
+);
+
+create table `notenverwaltung`.`exam_class`
+(
+    exam_id  bigint unsigned not null,
+    class_id bigint unsigned not null,
+    `date`   DATE            NOT NULL,
+    constraint u_exam_class_exam_id_class_id unique (exam_id, class_id),
+    constraint fk_exam_class_exam foreign key (exam_id) references exam (exam_id),
+    constraint fk_exam_class_class foreign key (class_id) references class (class_id)
 );
 
 COMMIT;
