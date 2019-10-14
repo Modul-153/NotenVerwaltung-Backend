@@ -4,7 +4,6 @@ import me.modul153.NotenVerwaltung.data.Subject;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 
 public class MockSubjectManager implements ISubjectManager {
 
@@ -19,27 +18,17 @@ public class MockSubjectManager implements ISubjectManager {
     }
 
     @Override
-    public Subject get(int id) throws SQLException {
+    public HashMap<Integer, Subject> getMultiple(int... keys) throws SQLException {
         return null;
     }
 
     @Override
-    public void update(Subject object) throws SQLException {
+    public void updateMultiple(Subject... objects) throws SQLException {
 
     }
 
     @Override
-    public void updateAll(List<Subject> objects) throws SQLException {
-
-    }
-
-    @Override
-    public void delete(int key) throws SQLException {
-
-    }
-
-    @Override
-    public void deleteMultiple(List<Integer> keys) throws SQLException {
+    public void deleteMultiple(int... keys) throws SQLException {
 
     }
 }

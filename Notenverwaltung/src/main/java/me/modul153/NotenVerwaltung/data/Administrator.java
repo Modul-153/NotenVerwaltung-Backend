@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.io.Serializable;
 
 @Getter
-public class Teacher implements Serializable {
-    int teacherId;
-    int userId;
+public class Administrator implements Serializable {
+    int administratorId;
+    User userId;
 }

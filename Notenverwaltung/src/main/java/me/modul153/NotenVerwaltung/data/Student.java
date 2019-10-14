@@ -7,5 +7,5 @@ import java.io.Serializable;
 @Getter
 public class Student implements Serializable {
     int studentId;
-    int userId;
+    User user;
 }

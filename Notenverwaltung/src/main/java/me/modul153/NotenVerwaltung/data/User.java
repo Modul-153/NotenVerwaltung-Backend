@@ -16,4 +16,5 @@ public class User implements Serializable {
     private int number;
     private String password;
     private City city;
+
 }

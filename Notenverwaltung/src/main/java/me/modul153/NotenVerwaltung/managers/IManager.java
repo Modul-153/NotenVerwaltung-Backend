@@ -1,7 +1,5 @@
 package me.modul153.NotenVerwaltung.managers;
 
-import com.sun.istack.internal.NotNull;
-
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -19,7 +17,7 @@ public interface IManager<M extends Serializable> {
         return r.get(id);
     }
 
-    default void update(@NotNull M object) throws SQLException {
+    default void update(M object) throws SQLException {
         updateMultiple(object);
     }
 
