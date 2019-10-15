@@ -19,7 +19,9 @@ public class FieldTranslator {
     private static final String fieldNotNullErrorMessage = "Field can not be null!";
     private static final String classNotNullErrorMessage = "Class can not be null!";
     private static final String methodNotNullErrorMessage = "Method can not be null!";
-    private static final String funcitonNotNullErrorMessage = "Function can not be null!";
+    private static final String functionNotNullErrorMessage = "Function can not be null!";
+    private static final String functionReturnNullErrorMessage = "Function is not allowed to retrun null!";
+
     /**
      * this value determines if, when the name searched for was not set, it should try to take the Name Method for that type.
      */
@@ -37,8 +39,6 @@ public class FieldTranslator {
         fallbackMethodField = new HashMap<>();
         fallbackMethodMethod = new HashMap<>();
         fallbackMethodClass = new HashMap<>();
-
-        fallbac
     }
 
     /**
@@ -57,6 +57,7 @@ public class FieldTranslator {
 
         return classMap.getOrDefault(clazz, getDefault(clazz));
     }
+
     /**
      * @param field the field for what the new Name should be Set.
      * @return the new Name given for the Field, Empty String if nothing was found.
@@ -66,6 +67,7 @@ public class FieldTranslator {
 
         return fieldMap.getOrDefault(field, getDefault(field));
     }
+
     /**
      * @param field the field for what the new Name should be Set.
      * @return the new Name given for the Field, Empty String if nothing was found.
@@ -100,7 +102,7 @@ public class FieldTranslator {
     }
 
     /**
-     * @param method   the field for what the new name should be set.
+     * @param method  the field for what the new name should be set.
      * @param newName the new name for the given field.
      */
     public void setName(@NotNull Method method, @NotNull String newName) {
@@ -112,34 +114,39 @@ public class FieldTranslator {
 
     /**
      * This Function will be called if the fallback type is set to {@link FallbackType#NAME_METHOD}
-     * @param method the Method for what the name should be stored.
+     *
+     * @param method   the Method for what the name should be stored.
      * @param function the function that will be called.
      */
     public void addFallbackForMethod(Method method, Function<Method, String> function) {
         assert method != null : methodNotNullErrorMessage;
-        assert function != null : funcitonNotNullErrorMessage;
+        assert function != null : functionNotNullErrorMessage;
 
         fallbackMethodMethod.put(method, function);
     }
+
     /**
      * This Function will be called if the fallback type is set to {@link FallbackType#NAME_METHOD}
-     * @param field the Method for what the name should be stored.
+     *
+     * @param field    the Method for what the name should be stored.
      * @param function the function that will be called.
      */
     public void addFallbackForField(Field field, Function<Field, String> function) {
         assert field != null : fieldNotNullErrorMessage;
-        assert function != null : funcitonNotNullErrorMessage;
+        assert function != null : functionNotNullErrorMessage;
 
         fallbackMethodField.put(field, function);
     }
+
     /**
      * This Function will be called if the fallback type is set to {@link FallbackType#NAME_METHOD}
-     * @param clazz the Method for what the name should be stored.
+     *
+     * @param clazz    the Method for what the name should be stored.
      * @param function the function that will be called.
      */
     public void addFallbackForClass(Class clazz, Function<Class, String> function) {
         assert clazz != null : methodNotNullErrorMessage;
-        assert function != null : funcitonNotNullErrorMessage;
+        assert function != null : functionNotNullErrorMessage;
 
         fallbackMethodClass.put(clazz, function);
     }
@@ -149,27 +156,63 @@ public class FieldTranslator {
             case EMPTY:
                 return "";
             case NAME_METHOD:
-                return fallbackMethodField.getOrDefault(field, input -> "").apply(field);
+                String result1 = fallbackMethodField.getOrDefault(field, input -> "").apply(field);
+                assert result1 != null : functionReturnNullErrorMessage;
+                return result1;
+            case GET_NAME:
+                return field.getName();
+            case AUTO:
+                String result2 = fallbackMethodField.getOrDefault(field, input -> "").apply(field);
+                assert result2 != null : functionReturnNullErrorMessage;
+                if (result2.equalsIgnoreCase("")) {
+                    result2 = field.getName();
+                }
+                return result2;
             default:
                 throw new RuntimeException("Fallback Type can not be null.");
         }
     }
+
     private String getDefault(Method method) {
         switch (fallbackType) {
             case EMPTY:
                 return "";
             case NAME_METHOD:
-                return fallbackMethodMethod.getOrDefault(method, input -> "").apply(method);
+                String result1 = fallbackMethodMethod.getOrDefault(method, input -> "").apply(method);
+                assert result1 != null : functionReturnNullErrorMessage;
+                return result1;
+            case GET_NAME:
+                return method.getName();
+            case AUTO:
+                String result2 = fallbackMethodMethod.getOrDefault(method, input -> "").apply(method);
+                assert result2 != null : functionReturnNullErrorMessage;
+                if (result2.equalsIgnoreCase("")) {
+                    result2 = method.getName();
+                }
+                return result2;
             default:
                 throw new RuntimeException("Fallback Type can not be null.");
         }
     }
+
     private String getDefault(Class clazz) {
         switch (fallbackType) {
             case EMPTY:
                 return "";
             case NAME_METHOD:
-                return fallbackMethodClass.getOrDefault(clazz, input -> "").apply(clazz);
+                String result1 = fallbackMethodClass.getOrDefault(clazz, input -> "").apply(clazz);
+                assert result1 != null : functionReturnNullErrorMessage;
+                return result1;
+            case GET_NAME:
+                return clazz.getSimpleName();
+            case AUTO:
+                String result2 = fallbackMethodClass.getOrDefault(clazz, input -> "").apply(clazz);
+
+                assert result2 != null : functionReturnNullErrorMessage;
+
+                if (result2.equalsIgnoreCase("")) {
+                    result2 = clazz.getName();
+                }
             default:
                 throw new RuntimeException("Fallback Type can not be null.");
         }
@@ -186,6 +229,14 @@ public class FieldTranslator {
         /**
          * will take the given Method in the {@link FieldTranslator} Class and if there is none, it will return null
          */
-        NAME_METHOD
+        NAME_METHOD,
+        /**
+         * This will call the getName bzw. getSimpleName classes on the Field Method or Class Objects.
+         */
+        GET_NAME,
+        /**
+         * This will try to get it via pre defined Method if that fails it will take the {@link FallbackType#GET_NAME} approach.
+         */
+        AUTO
     }
 }
