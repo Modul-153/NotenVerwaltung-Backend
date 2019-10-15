@@ -216,8 +216,23 @@ public class FieldTranslator {
             default:
                 throw new RuntimeException("Fallback Type can not be null.");
         }
+
     }
 
+    public static Field getField(Class clazz, String fieldName) {
+        try {
+            return clazz.getField(fieldName);
+        } catch (NoSuchFieldException e) {
+            return null;
+        }
+    }
+    public static Method getMethod(Class clazz, String methodName, Class... arguments) {
+        try {
+            return clazz.getMethod(methodName, arguments);
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
+    }
     /**
      * Type of fallbacks if name was not found in the {@link FieldTranslator} class.
      */
