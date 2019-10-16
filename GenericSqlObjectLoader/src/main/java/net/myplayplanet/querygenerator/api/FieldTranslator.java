@@ -286,7 +286,6 @@ public class FieldTranslator {
                 if (result2.equalsIgnoreCase("")) {
                     result2 = clazz.getSimpleName();
                 }
-
                 return result2;
             default:
                 throw new RuntimeException("Fallback Type can not be null.");

@@ -1,4 +1,4 @@
-package net.myplayplanet.querygenerator.test;
+package net.myplayplanet.querygenerator.test.translator;
 
 import net.myplayplanet.querygenerator.api.FieldTranslator;
 import net.myplayplanet.querygenerator.test.testclasses.SimpleSample;

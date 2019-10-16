@@ -1,4 +1,4 @@
-package net.myplayplanet.querygenerator.test;
+package net.myplayplanet.querygenerator.test.translator;
 
 import com.google.common.base.CaseFormat;
 import net.myplayplanet.querygenerator.api.FieldTranslator;
