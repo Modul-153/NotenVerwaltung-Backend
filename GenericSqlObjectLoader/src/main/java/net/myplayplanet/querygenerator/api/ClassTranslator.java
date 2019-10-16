@@ -106,7 +106,7 @@ public class ClassTranslator {
     }
 
     /**
-     * This Method creates a tableObject and add it to the in the costructor defined {@link TableModel}
+     * This Method creates a tableObject and add it to the in the  costructor defined {@link TableModel}
      * @return the created TableObject.
      */
     public TableObject createTableObject(boolean findPrimary) {
@@ -121,9 +121,18 @@ public class ClassTranslator {
         List<String> fieldNames = this.getFieldListFunction.apply(clazz);
         assert fieldNames != null && fieldNames.size() > 0 : "Fieldnames can not be null or Empty";
 
+        if (findPrimary && this.primaryKeyFieldName == null) {
+            this.primaryKeyFieldName = this.findPrimary(fieldNames);
+        }
+
         int id = 0;
         for (String fieldName : fieldNames) {
             id++;
+
+            if (primaryKeyFieldName != null && primaryKeyFieldName.equalsIgnoreCase(fieldName)) {
+                table.setPrimaryKey(id);
+            }
+
             Method method = FieldTranslator.getMethod(clazz, fieldName);
 
             if (method != null) {
@@ -138,11 +147,7 @@ public class ClassTranslator {
                 handleFieldCreation(id, table, newName, field.getType());
             }
         }
-
-        if (findPrimary) {
-            //todo implement automatic finding of primary key from the name etc.
-        }
-
+        this.model.addTable(table);
         return table;
     }
 
