@@ -15,6 +15,10 @@ public class FieldTranslator {
     private HashMap<Method, Function<Method, String>> fallbackMethodMethod;
     private HashMap<Class, Function<Class, String>> fallbackMethodClass;
 
+    private Function<Field, String> fallbackCustomFieldNameProcessor;
+    private Function<Method, String> fallbackCustomMethodNameProcessor;
+    private Function<Class, String> fallbackCustomClassNameProcessor;
+
     private static final String stringNotNullOrEmptyErrorMessage = "String can not be null, Empty or Whitespace!";
     private static final String fieldNotNullErrorMessage = "Field can not be null!";
     private static final String classNotNullErrorMessage = "Class can not be null!";
@@ -69,13 +73,13 @@ public class FieldTranslator {
     }
 
     /**
-     * @param field the field for what the new Name should be Set.
+     * @param method the method for what the new Name should be Set.
      * @return the new Name given for the Field, Empty String if nothing was found.
      */
-    public String getName(@NotNull Method field) {
-        assert field != null : fieldNotNullErrorMessage;
+    public String getName(@NotNull Method method) {
+        assert method != null : methodNotNullErrorMessage;
 
-        return fieldMap.getOrDefault(field, getDefault(field));
+        return methodMap.getOrDefault(method, getDefault(method));
     }
 
 
@@ -118,7 +122,7 @@ public class FieldTranslator {
      * @param method   the Method for what the name should be stored.
      * @param function the function that will be called.
      */
-    public void addFallbackForMethod(Method method, Function<Method, String> function) {
+    public void addFallback(Method method, Function<Method, String> function) {
         assert method != null : methodNotNullErrorMessage;
         assert function != null : functionNotNullErrorMessage;
 
@@ -131,7 +135,7 @@ public class FieldTranslator {
      * @param field    the Method for what the name should be stored.
      * @param function the function that will be called.
      */
-    public void addFallbackForField(Field field, Function<Field, String> function) {
+    public void addFallback(Field field, Function<Field, String> function) {
         assert field != null : fieldNotNullErrorMessage;
         assert function != null : functionNotNullErrorMessage;
 
@@ -144,11 +148,48 @@ public class FieldTranslator {
      * @param clazz    the Method for what the name should be stored.
      * @param function the function that will be called.
      */
-    public void addFallbackForClass(Class clazz, Function<Class, String> function) {
+    public void addFallback(Class clazz, Function<Class, String> function) {
         assert clazz != null : methodNotNullErrorMessage;
         assert function != null : functionNotNullErrorMessage;
 
         fallbackMethodClass.put(clazz, function);
+    }
+
+    /**
+     * This method will be active if the fallback type is set to {@link FallbackType#CUSTOM_FIELD_PROCESSOR} or {@link FallbackType#AUTO}.
+     * If this Method is set, it will be called to customise the messages that will be returned as a fallback.
+     *
+     * This is useful for example if you want to format classNames to a specific typing from UpperCamel to lower Snake etc.
+     * @param func the function that will be called.
+     */
+    public void setCustomNameProcessorClass(@NotNull Function<Class, String> func) {
+        assert func != null : functionNotNullErrorMessage;
+        this.fallbackCustomClassNameProcessor  = func;
+    }
+
+    /**
+     * This method will be active if the fallback type is set to {@link FallbackType#CUSTOM_FIELD_PROCESSOR} or {@link FallbackType#AUTO}.
+     * If this Method is set, it will be called to customise the messages that will be returned as a fallback.
+     *
+     * This is useful for example if you want to format classNames to a specific typing from UpperCamel to lower Snake etc.
+     * @param func the function that will be called.
+     */
+    public void setCustomNameProcessorField(@NotNull Function<Field, String> func) {
+        assert func != null : functionNotNullErrorMessage;
+        this.fallbackCustomFieldNameProcessor  = func;
+
+    }
+
+    /**
+     * This method will be active if the fallback type is set to {@link FallbackType#CUSTOM_FIELD_PROCESSOR} or {@link FallbackType#AUTO}.
+     * If this Method is set, it will be called to customise the messages that will be returned as a fallback.
+     *
+     * This is useful for example if you want to format classNames to a specific typing from UpperCamel to lower Snake etc.
+     * @param func the function that will be called.
+     */
+    public void setCustomNameProcessorMethod(@NotNull Function<Method, String> func) {
+        assert func != null : functionNotNullErrorMessage;
+        this.fallbackCustomMethodNameProcessor = func;
     }
 
     private String getDefault(Field field) {
@@ -161,9 +202,20 @@ public class FieldTranslator {
                 return result1;
             case GET_NAME:
                 return field.getName();
+            case CUSTOM_FIELD_PROCESSOR:
+                if (fallbackCustomFieldNameProcessor == null) {
+                    return "";
+                }
+                return fallbackCustomFieldNameProcessor.apply(field);
             case AUTO:
                 String result2 = fallbackMethodField.getOrDefault(field, input -> "").apply(field);
-                assert result2 != null : functionReturnNullErrorMessage;
+                assert result2 != null : functionReturnNullErrorMessage + " (fallbackMethodField)";
+
+                if (result2.equalsIgnoreCase("") && fallbackCustomFieldNameProcessor != null) {
+                    result2 = fallbackCustomFieldNameProcessor.apply(field);
+                }
+                assert result2 != null : functionReturnNullErrorMessage + " (fallbackCustomFieldNameProcessor)";
+
                 if (result2.equalsIgnoreCase("")) {
                     result2 = field.getName();
                 }
@@ -183,9 +235,20 @@ public class FieldTranslator {
                 return result1;
             case GET_NAME:
                 return method.getName();
+            case CUSTOM_FIELD_PROCESSOR:
+                if (fallbackCustomMethodNameProcessor == null) {
+                    return "";
+                }
+                return fallbackCustomMethodNameProcessor.apply(method);
             case AUTO:
                 String result2 = fallbackMethodMethod.getOrDefault(method, input -> "").apply(method);
-                assert result2 != null : functionReturnNullErrorMessage;
+                assert result2 != null : functionReturnNullErrorMessage + " (fallbackMethodMethod)";
+
+                if (result2.equalsIgnoreCase("") && fallbackCustomMethodNameProcessor != null) {
+                    result2 = fallbackCustomMethodNameProcessor.apply(method);
+                }
+                assert result2 != null : functionReturnNullErrorMessage + " (fallbackCustomMethodNameProcessor)";
+
                 if (result2.equalsIgnoreCase("")) {
                     result2 = method.getName();
                 }
@@ -205,14 +268,26 @@ public class FieldTranslator {
                 return result1;
             case GET_NAME:
                 return clazz.getSimpleName();
+            case CUSTOM_FIELD_PROCESSOR:
+                if (fallbackCustomClassNameProcessor == null) {
+                    return "";
+                }
+                return fallbackCustomClassNameProcessor.apply(clazz);
             case AUTO:
                 String result2 = fallbackMethodClass.getOrDefault(clazz, input -> "").apply(clazz);
 
-                assert result2 != null : functionReturnNullErrorMessage;
+                assert result2 != null : functionReturnNullErrorMessage + " (fallbackMethodClass)";
+
+                if (result2.equalsIgnoreCase("") && fallbackCustomClassNameProcessor != null) {
+                    result2 = fallbackCustomClassNameProcessor.apply(clazz);
+                }
+                assert result2 != null : functionReturnNullErrorMessage + " (fallbackCustomClassNameProcessor)";
 
                 if (result2.equalsIgnoreCase("")) {
-                    result2 = clazz.getName();
+                    result2 = clazz.getSimpleName();
                 }
+
+                return result2;
             default:
                 throw new RuntimeException("Fallback Type can not be null.");
         }
@@ -250,7 +325,11 @@ public class FieldTranslator {
          */
         GET_NAME,
         /**
-         * This will try to get it via pre defined Method if that fails it will take the {@link FallbackType#GET_NAME} approach.
+         * This will try to find a custom method for processing the name of the field, method or class. If no method is set it will return a Empty string.
+         */
+        CUSTOM_FIELD_PROCESSOR,
+        /**
+         * This will try to get it via {@link FallbackType#NAME_METHOD}, if that fails it will try {@link FallbackType#CUSTOM_FIELD_PROCESSOR} and that fails aswell, it will take {@link FallbackType#GET_NAME}.
          */
         AUTO
     }
