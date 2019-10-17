@@ -1,7 +1,8 @@
-package net.myplayplanet.querygenerator.api.table;
+package net.myplayplanet.querygenerator.api.model.table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.myplayplanet.querygenerator.api.model.SqlDataType;
 
 /**
  * this Object represents a Field or a method in a Java class or a column in SQL.

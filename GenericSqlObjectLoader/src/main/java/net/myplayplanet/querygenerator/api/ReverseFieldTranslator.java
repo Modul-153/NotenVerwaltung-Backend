@@ -9,7 +9,7 @@ import java.util.HashMap;
  * <p>
  * IMPORTANT: Because it is nearly impossible to reverse Engenier the changes that can be made via the Custom Functions, the Method "getName" must be called at least once on Classes, Fields or Methods that take the default for this to work.
  */
-public class ReverseFieldTranslator extends FieldTranslator {
+public class ReverseFieldTranslator extends FieldTranslator { //todo test coverage to at least 90%
 
     HashMap<String, Field> fields;
     HashMap<String, Method> methods;

@@ -1,11 +1,13 @@
-package net.myplayplanet.querygenerator.api.table;
+package net.myplayplanet.querygenerator.api.model;
+
+import net.myplayplanet.querygenerator.api.model.table.TableObject;
 
 import java.util.HashMap;
 
-public class TableModel {
+public class SqlModel {
     HashMap<String, TableObject> tables;
 
-    public TableModel() {
+    public SqlModel() {
         tables = new HashMap<>();
     }
 

@@ -1,4 +1,4 @@
-package net.myplayplanet.querygenerator.api.table;
+package net.myplayplanet.querygenerator.api.model;
 
 /**
  * currently supported SQL Datatypes.

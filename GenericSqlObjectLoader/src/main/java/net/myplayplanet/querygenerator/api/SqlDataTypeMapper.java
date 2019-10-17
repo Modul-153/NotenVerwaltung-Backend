@@ -1,7 +1,7 @@
 package net.myplayplanet.querygenerator.api;
 
-import net.myplayplanet.querygenerator.api.table.SqlDataType;
-import net.myplayplanet.querygenerator.api.table.SqlDataTypes;
+import net.myplayplanet.querygenerator.api.model.SqlDataType;
+import net.myplayplanet.querygenerator.api.model.SqlDataTypes;
 
 import java.util.HashMap;
 import java.util.UUID;

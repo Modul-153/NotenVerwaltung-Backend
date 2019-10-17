@@ -1,17 +1,18 @@
-package net.myplayplanet.querygenerator.api.table;
+package net.myplayplanet.querygenerator.api.model.table;
 
 import lombok.Getter;
 import net.myplayplanet.querygenerator.api.NotNull;
 import net.myplayplanet.querygenerator.api.Nullable;
+import net.myplayplanet.querygenerator.api.model.SqlModel;
 
 import java.util.HashMap;
 
 /**
  * this objects represents a Table in SQL and a Class in Java.
- * This Object only makes sens in the context of a {@link TableModel}.
+ * This Object only makes sens in the context of a {@link SqlModel}.
  */
 @Getter
-public class TableObject {
+public class TableObject { //todo test coverage to at least 90%
     private String name;
     private HashMap<Integer, TypeObject> fields;
     private Integer primaryKeyIndex;
@@ -57,5 +58,32 @@ public class TableObject {
      */
     public void addField(int id, TypeObject typeObject) {
         addField(id, typeObject, false);
+    }
+
+
+    /**
+     * @param name the name of the Field
+     * @return the index in the Table to that field.
+     */
+    public int getIndexFromName(String name) {
+        for (Integer integer : fields.keySet()) {
+            if (fields.get(integer).getName().equals(name)) {
+                return integer;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * @param name the name of the Field
+     * @return the index in the Table to that field.
+     */
+    public TypeObject getObjectFromName(String name) {
+        for (TypeObject to : fields.values()) {
+            if (to.getName().equals(name)) {
+                return to;
+            }
+        }
+        return null;
     }
 }
