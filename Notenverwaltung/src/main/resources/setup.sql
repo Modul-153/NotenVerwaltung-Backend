@@ -1,5 +1,7 @@
 BEGIN;
 
+drop database if exists notenverwaltung;
+create database notenverwaltung;
 
 use notenverwaltung;
 
@@ -228,6 +230,16 @@ create table `notenverwaltung`.`exam_class`
     constraint u_exam_class_exam_id_class_id unique (exam_id, class_id),
     constraint fk_exam_class_exam foreign key (exam_id) references exam (exam_id),
     constraint fk_exam_class_class foreign key (class_id) references class (class_id)
+);
+
+create table `notenverwaltung`.`postponed_exam`
+(
+  exam_id bigint unsigned not null,
+  student_id bigint unsigned not null,
+  new_date DATE,
+  constraint u_exam_stundet_date unique (exam_id, student_id, new_date),
+  constraint  fk_postponed_exam_exam_id foreign key (exam_id) references exam (exam_id),
+  constraint  fk_postponed_exam_student_id foreign key (student_id) references student (student_id)
 );
 
 COMMIT;
